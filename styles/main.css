@@ -1,0 +1,51 @@
+*{
+	padding: 0;
+	margin: 0;
+	font-family: 'Droid Sans', sans-serif;
+}
+body {
+	background-color:#f5f7f6;
+}
+#header {
+	background-color: #28d5ff;
+	width: 100%;
+	display: inline-block;
+}
+	#header .title {
+		background-color: #767475;
+		font-weight: bold;
+		font-size: 1.5em;
+		float: left;
+		padding: 10px 20px;
+		color:white;
+	}
+	#header .nav {
+		padding: 14px;
+		float: left;
+	}
+	#header .nav span {
+		padding: 5px 20px;
+		background-color: #f5f7f6;
+		color: #000;
+		cursor: pointer;
+	}
+	#header .nav span.active {
+		font-weight: bold;
+	}
+
+#container {
+	padding: 20px;
+	width: 50%;
+	margin: 0 auto;
+	text-align: center;
+}
+	#container input[type="submit"] {
+		margin-top:20px;
+		padding: 3px 20px;
+	}
+	#container div.section_visible {
+		display: block;
+	}
+	#container div.section_hidden {
+		display: none;
+	}
