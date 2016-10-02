@@ -14,13 +14,16 @@
 </div>
 <div id="container">
 	<div id="translate" class="section_visible">
-		<form action="controller.php" method="post" id="traductappForm">
+		<form action="controller.php" method="post" id="traductappForm" enctype="multipart/form-data">
 			<div class="directory_chooser">
 				<span>Seleccione un directorio para analizar:</span>
-				<input type="file" name="directory" webkitdirectory directory multiple />
+        		<input type="file" name="files[]" id="files" multiple="" directory="" webkitdirectory="" mozdirectory="">
 			</div>
 			<input type="submit" name="submitButton" value="Analizar" />
 		</form>
+	</div>
+
+	<div id="archivos">
 	</div>
 
 	<div id="logs" class="section_hidden">
