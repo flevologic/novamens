@@ -3,6 +3,20 @@
 <link rel="stylesheet" type="text/css" href="styles/main.css">
 <script type="text/javascript" src="scripts/jquery-3.1.1.min.js"></script>
 <script type="text/javascript" src="scripts/main.js"></script>
+
+<script type="text/javascript">
+
+function selectFolder(e) {
+
+	var theFiles = e.target.files;
+	
+	/*for (var i=0, file; file=theFiles[i]; i++) {
+		alert(file.name);
+	}*/
+	console.log(e.target.files);
+}
+
+</script>
 <title>TraductApp</title>
 
 <div id="header">
@@ -17,7 +31,7 @@
 		<form action="controller.php" method="post" id="traductappForm" enctype="multipart/form-data">
 			<div class="directory_chooser">
 				<span>Seleccione un directorio para analizar:</span>
-        		<input type="file" name="files[]" id="files" multiple="" directory="" webkitdirectory="" mozdirectory="">
+        		<input type="file" name="files[]" id="files" multiple="" directory="" onChange="selectFolder(event)" webkitdirectory="" mozdirectory="">
 			</div>
 			<input type="submit" name="submitButton" value="Analizar" />
 		</form>
