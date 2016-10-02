@@ -1,5 +1,13 @@
 $(document).ready(function() {
 	toggleSection();
+	$("#traductappForm").submit(function(e){
+		e.preventDefault();
+		$.ajax({
+        	url: 'controller.php'
+   		}).done(function(res){
+        	$("#archivos").html(res);
+        });
+	})
 });
 
 function toggleSection(toShow = 'translate'){
