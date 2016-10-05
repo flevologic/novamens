@@ -18,13 +18,15 @@
 		<form action="controller.php" method="post" id="traductappForm" enctype="multipart/form-data">
 			<div class="directory_chooser">
 				<span>Seleccione un directorio para analizar:</span>
-        		<input type="file" name="files[]" id="files" multiple="" directory="" onClick ="loading('archivos');" onChange="selectFolder(event)" webkitdirectory="" mozdirectory="">
+        		<input type="file" name="files[]" id="files" multiple="" directory="" webkitdirectory="" mozdirectory="">
 			</div>
 			<!--<input type="submit" name="submitButton" value="Analizar" /> -->
 		</form>
-	</div>
 
-	<div id="archivos">
+		<div id="loading"></div>
+
+		<div id="archivos">
+		</div>
 	</div>
 
 	<div id="logs" class="section_hidden">

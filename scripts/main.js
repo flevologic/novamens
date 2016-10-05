@@ -1,5 +1,13 @@
 $(document).ready(function() {
 	toggleSection();
+
+	$('#files').click(function(e){
+	  toggleLoading();
+	});
+	$('#files').change(function(e){
+	  selectFolder(e);
+	});
+
 	/*$("#traductappForm").submit(function(e){
 		e.preventDefault();
 		$.ajax({
@@ -29,7 +37,7 @@ function selectFolder(e) {
 	var archivos = [];
 	var html = "";
 	if(theFiles.length > 0){
-		html = "<table border=1><tr><th></th><th>Carpeta</th><th>Archivo</th></tr>";
+		html = "<table><tr><th></th><th>Carpeta</th><th>Archivo</th></tr>";
 		var cont = 0;
 		for (var i=0, file; file=theFiles[i]; i++) {
 			archivos[i] = file;
@@ -53,17 +61,14 @@ function selectFolder(e) {
 		}
 	}
 	else{
-		html = "Se seleccionó un directorio sin archivos dentro.";
+		html = "Se seleccion&oacute; un directorio sin archivos dentro.";
 	}
 
+	toggleLoading();
 	$("#archivos").html(html);
-		//console.log(html);
-
 }
 
-function loading(container){
-	var loading = $("<img/>");
-	loading.attr("src","img/loading.gif");
-	$("#"+container).append(loading);
+function toggleLoading(e){
+	$('#loading').toggle();
 }
 
