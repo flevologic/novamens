@@ -84,3 +84,7 @@ body {
 	#archivos table tr td {
 		padding:6px;
 	}
+
+#cboIdioma{
+	float:right;
+}
