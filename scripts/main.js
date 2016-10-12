@@ -44,13 +44,13 @@ function selectFolder(e) {
 	codigosIdiomas = [];
 	if(theFiles.length > 0){
 		objHtml = renderizarTabla(theFiles);
-		
+
 		if(objHtml.cont == 0){
 			html = "No se han encontrado archivos .properties";
 		}
 		else{
 			html2 = "<div id='contIdioma'><label>Seleccione idioma origen</label><select id='cboIdioma' name='idiomas'><option value='todos'>Todos</option>";
-		
+
 			for(var x=0;x < idiomas.length;x++){
 				html2 += "<option value='" + idiomas[x].codigo + "'>" + idiomas[x].descripcion + "</option>";
 			}
@@ -84,7 +84,7 @@ function obtenerIdioma(archivo){
 	if(idioma.length > 0 && idioma.length < 3){
 		switch(idioma){
 			case "es":
-				objIdioma.descripcion = "Español";
+				objIdioma.descripcion = "Espa&ntilde;ol";
 				objIdioma.codigo = "es";
 			break;
 			case "fr":
@@ -92,18 +92,18 @@ function obtenerIdioma(archivo){
 				objIdioma.codigo = "fr";
 			break;
 			case "po":
-				objIdioma.descripcion = "Portugués";
+				objIdioma.descripcion = "Portugu&eacute;s";
 				objIdioma.codigo = "po";
 			break;
 			default:
-				objIdioma.descripcion = "Inglés";
+				objIdioma.descripcion = "Ingl&eacute;s";
 				objIdioma.codigo = "en";
 			break;
 		}
 	}
 	else
 	{
-		objIdioma.descripcion = "Inglés";
+		objIdioma.descripcion = "Ingl&eacute;s";
 		objIdioma.codigo = "en";
 	}
 
@@ -121,13 +121,13 @@ function renderizarTabla(listArchivos){
 				ruta.pop();
 				ruta = ruta.join("/");
 				var idioma = obtenerIdioma(file.name);
-		
+
 				if(codigosIdiomas.indexOf(idioma.codigo) === -1){
 					idiomas.push(idioma);
 					codigosIdiomas.push(idioma.codigo);
 				}
-				
-				
+
+
 				var check = "<input id="+ i +" data-ruta='"+ ruta +"' data-file='"+ file.name +"' data-idioma='"+ idioma.codigo +"' type='checkbox' checked />";
 				html1 += "<tr>";
 				html1 += "<td>" + check + "</td>";
@@ -159,7 +159,7 @@ function cambiarIdioma(listArchivos){
 	{
 		objHtml = renderizarTabla(listArchivos);
 	}
-	
+
 	$("#contArchivos").html(objHtml.html);
 
 }
