@@ -40,6 +40,8 @@ function selectFolder(e) {
 	var theFiles = e.target.files;
 	var html = "";
 	archivos = theFiles;
+	idiomas = [];
+	codigosIdiomas = [];
 	if(theFiles.length > 0){
 		objHtml = renderizarTabla(theFiles);
 		
@@ -47,7 +49,7 @@ function selectFolder(e) {
 			html = "No se han encontrado archivos .properties";
 		}
 		else{
-			html2 = "<div id='contIdioma'><select id='cboIdioma' name='idiomas'><option value='todos'>Todos</option>";
+			html2 = "<div id='contIdioma'><label>Seleccione idioma origen</label><select id='cboIdioma' name='idiomas'><option value='todos'>Todos</option>";
 		
 			for(var x=0;x < idiomas.length;x++){
 				html2 += "<option value='" + idiomas[x].codigo + "'>" + idiomas[x].descripcion + "</option>";
@@ -60,8 +62,9 @@ function selectFolder(e) {
 		html = "Se seleccion&oacute; un directorio sin archivos dentro.";
 	}
 
-	toggleLoading();
 	$("#archivos").html(html);
+				toggleLoading();
+
 	$('#cboIdioma').change(function(e){
 	  cambiarIdioma(theFiles);
 	});
@@ -125,7 +128,7 @@ function renderizarTabla(listArchivos){
 				}
 				
 				
-				var check = "<input type='checkbox' checked />";
+				var check = "<input id="+ i +" data-ruta='"+ ruta +"' data-file='"+ file.name +"' data-idioma='"+ idioma.codigo +"' type='checkbox' checked />";
 				html1 += "<tr>";
 				html1 += "<td>" + check + "</td>";
 				html1 += "<td>" + ruta + "</td>";
@@ -143,13 +146,20 @@ function renderizarTabla(listArchivos){
 function cambiarIdioma(listArchivos){
 	var filtroIdioma = $("#cboIdioma").val();
 	var newArray = [];
-	for (var i=0, file; file=listArchivos[i]; i++) {
-		var idioma = obtenerIdioma(file.name);
-		if(idioma.codigo == filtroIdioma){
-			newArray.push(file);
+	if(filtroIdioma != "todos"){
+		for (var i=0, file; file=listArchivos[i]; i++) {
+			var idioma = obtenerIdioma(file.name);
+			if(idioma.codigo == filtroIdioma){
+				newArray.push(file);
+			}
 		}
-	}
 	objHtml = renderizarTabla(newArray);
+	}
+	else
+	{
+		objHtml = renderizarTabla(listArchivos);
+	}
+	
 	$("#contArchivos").html(objHtml.html);
 
 }
