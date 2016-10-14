@@ -20,7 +20,7 @@
 				<span>Seleccione un directorio para analizar:</span>
         		<input type="file" name="files[]" id="files" multiple="" directory="" webkitdirectory="" mozdirectory="">
 			</div>
-			<!--<input type="submit" name="submitButton" value="Analizar" /> -->
+			<input type="submit" name="submitButton" value="Analizar" />
 		</form>
 
 		<div id="loading"></div>

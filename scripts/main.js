@@ -7,6 +7,8 @@ $(document).ready(function() {
 	  toggleLoading();
 	});
 	$('#files').change(function(e){
+		//var tmppath = URL.createObjectURL(event.target.files[0]);
+		//console.log(event.target.files[0]);
 	  selectFolder(e);
 	});
 
@@ -37,6 +39,7 @@ function toggleSection(toShow = 'translate'){
 }
 
 function selectFolder(e) {
+	//console.log(e);
 	var theFiles = e.target.files;
 	var html = "";
 	archivos = theFiles;

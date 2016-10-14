@@ -1,7 +1,7 @@
-<?
-listar("dirs/java-src/", $archivos);
+<?php
+listar("/home/fedelevin/Documents/ORT/java-src/");
 
-function listar($directorio, $archivos){
+function listar($directorio, $archivos = null){
   $archivos = "";
   $puntos = array('.', '..'); //exluimos.
   $item = array_diff(scandir($directorio), $puntos);
