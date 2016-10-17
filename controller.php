@@ -43,7 +43,7 @@ function listar($path, &$archivos){
                 listar($path.$current.'/', $archivos);
             }
             else {
-                if(eregi(".*\.properties", $path.$current))
+                if(preg_match("/.*\.properties/", $path.$current))
                   $files[] = $current;
             }
         }
