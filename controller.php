@@ -1,68 +1,54 @@
 <?php
-listar("/home/fedelevin/Documents/ORT/java-src/");
+$ruta = "";
+if(isset($_POST["ruta"])){
+  $ruta = $_POST["ruta"];
+  $archivos = array();
+  listar($ruta, $archivos);
+  echo json_encode($archivos);
+}
+else if(isset($_POST["archivos"])){
+  $idiomaOrigen = $_POST["origen"];
+  $idiomaDestino = $_POST["destino"];
+  $archivos = json_decode($_POST["archivos"]);
 
-function listar($directorio, $archivos = null){
-  $archivos = "";
-  $puntos = array('.', '..'); //exluimos.
-  $item = array_diff(scandir($directorio), $puntos);
+  for($i = 0; $i < count($archivos); $i++ ){
+    $nombre = $archivos[$i]->nombre;
+    $ruta = $archivos[$i]->ruta;
+    $idioma = $archivos[$i]->idioma;
 
-  natsort($item);
+    print "$ruta => $nombre ($idioma)";
 
-  foreach($item as $archivo) {
-    $ruta = $directorio.$archivo;
-    if (is_dir($ruta)){
-      //solo si el archivo es un directorio, distinto que "." y ".."
-      $info = pathinfo($archivo);
-      $archivos .= '{"ruta":"' . $directorio . '"},';
-      //echo "<ul><li><span class=\"folder\">".$info['filename']."</span></li></ul>";
-      listar($ruta."/");
-    }
-
-    if (is_file($ruta)) {
-      $info = pathinfo($archivo);
-      $archivos .= '{"ruta":"' . $directorio . '","archivo":"' . $archivo . '"},';
-      //echo '<li><a href="'.$ruta.'">'.$info["filename"].'</a></li>';
-    }
   }
+  /*foreach ($archivos as $ruta => $archivo) {
+      for($i = 0; $i < count($archivo); $i++ ){
+          $nombre = explode(".", $archivo[$i]);
+          array_pop($nombre);
+          $nombre = implode(".", $nombre);
+          $aux = explode("_", $nombre);
+          $idioma = strtolower(array_pop($aux));
+          if($idioma == $idiomaOrigen){
+            print "$ruta => $archivo[$i]\n";
+          }
+      }
+      
+  }*/
+}   
 
-  echo $archivos;
+function listar($path, &$archivos){
+    $dir = opendir($path);
+    $files = array();
+    while ($current = readdir($dir)){
+        if( $current != "." && $current != "..") {
+            if(is_dir($path.$current)) {
+                listar($path.$current.'/', $archivos);
+            }
+            else {
+                if(eregi(".*\.properties", $path.$current))
+                  $files[] = $current;
+            }
+        }
+    }
+    if(count($files) > 0)
+      $archivos[$path] = $files;
 }
 
-/* echo "<ul id=\"browser\" class=\"filetree treeview-famfamfam\">";
-listar_archivos($_SERVER['DOCUMENT_ROOT']."/evaluaciones2/uploads/");
-echo "</ul>"; */
-/*function listar($ruta){
-	$archivos = array();
-   if (is_dir($ruta)) {
-      if ($dir = opendir($ruta)) {
-         while (($file = readdir($dir)) !== false) {
-         	//if ($file != "." && $file != "..") {
-         		array_push($archivos, $file);
-         		//echo "$file - " . filetype($ruta . $file);
-         	//}
-         }
-      closedir($dir);
-      echo json_encode($archivos);
-      }
-   }else
-      echo json_encode("Ruta no valida");
-} */
-
-/*
-function uploadFiles(){
-	$count = 0;
-    $exito = 0;
-    if ($_SERVER['REQUEST_METHOD'] == 'POST'){
-	    foreach ($_FILES['files']['name'] as $i => $name) {
-		    if (strlen($_FILES['files']['name'][$i]) > 1) {
-			    if (move_uploaded_file($_FILES['files']['tmp_name'][$i], 'upload/'.$name)) {
-			    	$count++;
-			    	$exito = 1;
-			    }
-		    }
-	    }
-    }
-
-    listar("upload/");
-
-}*/

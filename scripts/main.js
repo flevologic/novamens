@@ -1,27 +1,63 @@
 $(document).ready(function() {
 	toggleSection();
-	archivos = [];
+	archivos = "";
 	idiomas = [];
 	codigosIdiomas = [];
-	$('#files').click(function(e){
-	  toggleLoading();
-	});
-	$('#files').change(function(e){
-		//var tmppath = URL.createObjectURL(event.target.files[0]);
-		//console.log(event.target.files[0]);
-	  selectFolder(e);
-	});
 
-
-
-	/*$("#traductappForm").submit(function(e){
+	$("#traductappForm").submit(function(e){
+		toggleLoading();
 		e.preventDefault();
+		var ruta = $("#ruta").val();
 		$.ajax({
-        	url: 'controller.php'
+        	url: 'controller.php',
+        	method: "POST",
+        	data: "ruta=" + ruta
    		}).done(function(res){
-        	$("#archivos").html(res);
+   					toggleLoading();
+
+   			archivos = jQuery.parseJSON(res);
+   			objHtml = renderizarTabla(archivos);
+
+			if(objHtml.cont == 0){
+				html = "No se han encontrado archivos .properties";
+			}
+			else{
+				html2 = "<div id='contIdioma'><label>Seleccione idioma origen</label>&nbsp;<select id='cboIdiomaOrigen' name='idiomas'>";
+
+				for(var x=0;x < idiomas.length;x++){
+					html2 += "<option value='" + idiomas[x].codigo + "'>" + idiomas[x].descripcion + "</option>";
+				}
+				html2 += "</select></div>";
+				html2 += "<div id='contIdiomaDestino'><label>Seleccione idioma destino</label>&nbsp;<select id='cboIdiomaDestino' name='idiomas'>";
+				html2 += "<option value='en'>Inglés</option><option value='es'>Español</option><option value='fr'>Francés</option><option value='po'>Portugués</option></select></div>";
+				html2 += "<div id='revisarTraduccion'>Permitir modificar traducciones <input type='checkbox' id='chkRevisar'/> </div> <div id='contTraducir'><button class='boton' id='btnTraducir'>Traducir</button></div>";
+				html = html2 + objHtml.html;
+			}
+			$("#archivos").html(html);
+			$('#cboIdiomaOrigen').change(function(e){
+			  cambiarIdioma(archivos);
+			});
+			$('#btnTraducir').click(function(e){
+				var idiomaOrigen = $("#cboIdiomaOrigen").val();
+				var idiomaDestino = $("#cboIdiomaDestino").val();
+				var archivosSeleccionados = [];
+				$("#contArchivos input[type=checkbox]:checked").each(function(){
+					//cada elemento seleccionado
+					var nombre = $(this).attr("data-file");
+					var path = $(this).attr("data-ruta");
+					var idioma = $(this).attr("data-idioma");
+					archivosSeleccionados.push({nombre:nombre,ruta:path,idioma:idioma});
+				});
+			  	$.ajax({
+		        	url: 'controller.php',
+		        	method: "POST",
+		        	data: "archivos=" + JSON.stringify(archivosSeleccionados) + "&origen=" + idiomaOrigen + "&destino=" + idiomaDestino
+		   		}).done(function(res){
+		   			console.log(res);
+		        });
+			});
         });
-	})*/
+	})
 });
 
 function toggleSection(toShow = 'translate'){
@@ -36,41 +72,6 @@ function toggleSection(toShow = 'translate'){
 		$('#navLogs').addClass('active');
 		$('#navTranslate').removeClass('active');
 	}
-}
-
-function selectFolder(e) {
-	//console.log(e);
-	var theFiles = e.target.files;
-	var html = "";
-	archivos = theFiles;
-	idiomas = [];
-	codigosIdiomas = [];
-	if(theFiles.length > 0){
-		objHtml = renderizarTabla(theFiles);
-
-		if(objHtml.cont == 0){
-			html = "No se han encontrado archivos .properties";
-		}
-		else{
-			html2 = "<div id='contIdioma'><label>Seleccione idioma origen</label><select id='cboIdioma' name='idiomas'><option value='todos'>Todos</option>";
-
-			for(var x=0;x < idiomas.length;x++){
-				html2 += "<option value='" + idiomas[x].codigo + "'>" + idiomas[x].descripcion + "</option>";
-			}
-			html2 += "</select></div>";
-			html = html2 + objHtml.html;
-		}
-	}
-	else{
-		html = "Se seleccion&oacute; un directorio sin archivos dentro.";
-	}
-
-	$("#archivos").html(html);
-				toggleLoading();
-
-	$('#cboIdioma').change(function(e){
-	  cambiarIdioma(theFiles);
-	});
 }
 
 function toggleLoading(e){
@@ -117,53 +118,76 @@ function obtenerIdioma(archivo){
 function renderizarTabla(listArchivos){
 	html1 = "<div id='contArchivos'><table><tr><th></th><th>Carpeta</th><th>Archivo</th><th>Idioma</th></tr>";
 		var cont = 0;
-		for (var i=0, file; file=listArchivos[i]; i++) {
-			var arch = file.name.split(".");
-			if(arch[arch.length - 1] === "properties"){
-				var ruta = file.webkitRelativePath.split("/");
-				ruta.pop();
-				ruta = ruta.join("/");
-				var idioma = obtenerIdioma(file.name);
+		$.each( listArchivos, function( ruta, archivo ) {
+			for (var i=0; i < archivo.length; i++) {
+				var nombreArchivo = archivo[i];
+				var arch = nombreArchivo.split(".");
+				var idioma = obtenerIdioma(nombreArchivo);
 
 				if(codigosIdiomas.indexOf(idioma.codigo) === -1){
 					idiomas.push(idioma);
 					codigosIdiomas.push(idioma.codigo);
 				}
 
-
-				var check = "<input id="+ i +" data-ruta='"+ ruta +"' data-file='"+ file.name +"' data-idioma='"+ idioma.codigo +"' type='checkbox' checked />";
+				var check = "<input id="+ cont +" data-ruta='"+ ruta +"' data-file='"+ nombreArchivo +"' data-idioma='"+ idioma.codigo +"' type='checkbox' checked />";
 				html1 += "<tr>";
 				html1 += "<td>" + check + "</td>";
 				html1 += "<td>" + ruta + "</td>";
-				html1 += "<td>" + file.name + "</td>";
+				html1 += "<td>" + nombreArchivo + "</td>";
 				html1 += "<td>" + idioma.descripcion + "</td>";
 				html1 += "</tr>";
 				cont++;
 			}
-		}
+
+		});
+
 		html1 += "</table></div>";
 
 	return {cont:cont,html:html1};
 }
 
 function cambiarIdioma(listArchivos){
-	var filtroIdioma = $("#cboIdioma").val();
+	var filtroIdioma = $("#cboIdiomaOrigen").val();
 	var newArray = [];
-	if(filtroIdioma != "todos"){
-		for (var i=0, file; file=listArchivos[i]; i++) {
-			var idioma = obtenerIdioma(file.name);
-			if(idioma.codigo == filtroIdioma){
-				newArray.push(file);
+	if(filtroIdioma != ""){
+		html1 = "<div id='contArchivos'><table><tr><th></th><th>Carpeta</th><th>Archivo</th><th>Idioma</th></tr>";
+		var cont = 0;
+		$.each( listArchivos, function( ruta, archivo ) {
+			for (var i=0; i < archivo.length; i++) {
+				var nombreArchivo = archivo[i];
+				var arch = nombreArchivo.split(".");
+				var idioma = obtenerIdioma(nombreArchivo);
+				if(codigosIdiomas.indexOf(idioma.codigo) === -1){
+					idiomas.push(idioma);
+					codigosIdiomas.push(idioma.codigo);
+				}
+				if(idioma.codigo == filtroIdioma){
+					
+
+					var check = "<input id="+ cont +" data-ruta='"+ ruta +"' data-file='"+ nombreArchivo +"' data-idioma='"+ idioma.codigo +"' type='checkbox' checked />";
+					html1 += "<tr>";
+					html1 += "<td>" + check + "</td>";
+					html1 += "<td>" + ruta + "</td>";
+					html1 += "<td>" + nombreArchivo + "</td>";
+					html1 += "<td>" + idioma.descripcion + "</td>";
+					html1 += "</tr>";
+					cont++;
+				
+
+
+				}
 			}
-		}
-	objHtml = renderizarTabla(newArray);
+
+		});
+		html1 += "</table></div>";
+		$("#contArchivos").html(html1);
 	}
 	else
 	{
 		objHtml = renderizarTabla(listArchivos);
+		$("#contArchivos").html(objHtml.html);
 	}
 
-	$("#contArchivos").html(objHtml.html);
 
 }
 

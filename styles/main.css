@@ -85,5 +85,14 @@ body {
 		padding:6px;
 	}
 
-#cboIdioma{
+#contIdioma, #contIdiomaDestino, #contTraducir, #revisarTraduccion{
+	display:inline-block;
+	padding: 5px;
+	margin:5px;
+	font-size: 14px;
+}
+
+.boton{
+	padding: 5px;
+	font-size: 16px;
 }
