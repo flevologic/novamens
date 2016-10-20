@@ -29,7 +29,7 @@ $(document).ready(function() {
 				}
 				html2 += "</select></div>";
 				html2 += "<div id='contIdiomaDestino'><label>Seleccione idioma destino</label>&nbsp;<select id='cboIdiomaDestino' name='idiomas'>";
-				html2 += "<option value='en'>Inglés</option><option value='es'>Español</option><option value='fr'>Francés</option><option value='po'>Portugués</option></select></div>";
+				html2 += "<option value='en'>Ingl&eacute;s</option><option value='es'>Espa&ntilde;ol</option><option value='fr'>Franc&eacute;s</option><option value='po'>Portugu&eacute;s</option></select></div>";
 				html2 += "<div id='revisarTraduccion'>Permitir modificar traducciones <input type='checkbox' id='chkRevisar'/> </div> <div id='contTraducir'><button class='boton' id='btnTraducir'>Traducir</button></div>";
 				html = html2 + objHtml.html;
 			}
@@ -162,7 +162,7 @@ function cambiarIdioma(listArchivos){
 					codigosIdiomas.push(idioma.codigo);
 				}
 				if(idioma.codigo == filtroIdioma){
-					
+
 
 					var check = "<input id="+ cont +" data-ruta='"+ ruta +"' data-file='"+ nombreArchivo +"' data-idioma='"+ idioma.codigo +"' type='checkbox' checked />";
 					html1 += "<tr>";
@@ -172,7 +172,7 @@ function cambiarIdioma(listArchivos){
 					html1 += "<td>" + idioma.descripcion + "</td>";
 					html1 += "</tr>";
 					cont++;
-				
+
 
 
 				}
