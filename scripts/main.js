@@ -29,7 +29,7 @@ $(document).ready(function() {
 				}
 				html2 += "</select></div>";
 				html2 += "<div id='contIdiomaDestino'><label>Seleccione idioma destino</label>&nbsp;<select id='cboIdiomaDestino' name='idiomas'>";
-				html2 += "<option value='en'>Ingl&eacute;s</option><option value='es'>Espa&ntilde;ol</option><option value='fr'>Franc&eacute;s</option><option value='po'>Portugu&eacute;s</option></select></div>";
+				html2 += "<option value='en'>Ingl&eacute;s</option><option value='es'>Espa&ntilde;ol</option><option value='fr'>Franc&eacute;s</option><option value='pt'>Portugu&eacute;s</option></select></div>";
 				html2 += "<div id='revisarTraduccion'>Permitir modificar traducciones <input type='checkbox' id='chkRevisar'/> </div> <div id='contTraducir'><button class='boton' id='btnTraducir'>Traducir</button></div>";
 				html = html2 + objHtml.html;
 			}
@@ -48,12 +48,16 @@ $(document).ready(function() {
 					var idioma = $(this).attr("data-idioma");
 					archivosSeleccionados.push({nombre:nombre,ruta:path,idioma:idioma});
 				});
+				toggleLoading();
+				$("#btnTraducir").attr("disabled", true);
 			  	$.ajax({
 		        	url: 'controller.php',
 		        	method: "POST",
 		        	data: "archivos=" + JSON.stringify(archivosSeleccionados) + "&origen=" + idiomaOrigen + "&destino=" + idiomaDestino
 		   		}).done(function(res){
-		   			console.log(res);
+					toggleLoading();
+					$("#btnTraducir").attr("disabled", false);
+		   			$("#archivos").html("La traducción se ha realizado satisfactoriamente");
 		        });
 			});
         });
@@ -95,9 +99,9 @@ function obtenerIdioma(archivo){
 				objIdioma.descripcion = "Frances";
 				objIdioma.codigo = "fr";
 			break;
-			case "po":
+			case "pt":
 				objIdioma.descripcion = "Portugu&eacute;s";
-				objIdioma.codigo = "po";
+				objIdioma.codigo = "pt";
 			break;
 			default:
 				objIdioma.descripcion = "Ingl&eacute;s";
