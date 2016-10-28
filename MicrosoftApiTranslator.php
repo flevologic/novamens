@@ -71,7 +71,7 @@ class MicrosoftApiTranslator extends Traductor {
 		
 					//Mando a traducir
 					try {
-						$params = "text=".urlencode($lineValue[1])."&to=".$toLanguage."&from=".$fromLanguage;
+						$params = "text=".urlencode(utf8_encode($lineValue[1]))."&to=".$toLanguage."&from=".$fromLanguage;
 						$translateUrl = "http://api.microsofttranslator.com/v2/Http.svc/Translate?$params";
 		
 						//Create the Translator Object.
