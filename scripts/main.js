@@ -57,7 +57,7 @@ $(document).ready(function() {
 		   		}).done(function(res){
 					toggleLoading();
 					$("#btnTraducir").attr("disabled", false);
-		   			$("#archivos").html("La traducción se ha realizado satisfactoriamente");
+		   			$("#archivos").html("La traducci&oacute;n se ha realizado satisfactoriamente");
 		        });
 			});
         });
