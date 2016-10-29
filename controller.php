@@ -1,8 +1,9 @@
 <?php
-    ini_set("error_log", "/tmp/php-error.log");
+ini_set("error_log", "/tmp/php-error.log");
 $ruta = "";
 include 'config.php';
 include 'Traductor.php';
+include 'filestoignore.php';
 include 'AccessTokenAuthentication.php';
 include 'HTTPTranslator.php';
 include 'MicrosoftApiTranslator.php';
@@ -10,7 +11,7 @@ include 'MicrosoftApiTranslator.php';
 if (isset($_POST["ruta"])) {
 	$ruta = $_POST["ruta"];
 	$archivos = array();
-	listar($ruta, $archivos);
+	listar($ruta, $archivos, $filesToIgnore);
 	echo json_encode($archivos);
 }
 else if (isset($_POST["archivos"])) {
@@ -36,20 +37,23 @@ else if (isset($_POST["archivos"])) {
 	}
 
 	$traductApi->traduct($jsonToTraductOnArray, $fromLanguage, $toLanguage);
-}   
+}
 
-function listar($path, &$archivos){
+function listar($path, &$archivos, $filesToIgnore){
 	$dir = opendir($path);
 	$files = array();
 	while ($current = readdir($dir)){
-		if( $current != "." && $current != "..") {
-		    	if(is_dir($path.$current)) {
-				listar($path.$current.'/', $archivos);
-		    	}
-		    	else {
-				if(preg_match("/.*\.properties/", $path.$current))
-			  		$files[] = $current;
-		    	}
+		if ($current != "." && $current != "..") {
+			if(is_dir($path.$current)) {
+				listar($path.$current.'/', $archivos, $filesToIgnore);
+			}
+    else {
+			if(preg_match("/.*\.properties/", $path.$current))
+				// echo str_replace('.properties', '', $current);
+				if (!in_array(str_replace('.properties', '', $current), $filesToIgnore)){
+					$files[] = $current;
+				}
+		  }
 		}
 	}
 	if(count($files) > 0)
