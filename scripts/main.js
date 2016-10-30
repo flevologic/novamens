@@ -59,10 +59,10 @@ $(document).ready(function() {
 					toggleLoading();
 					$("#btnTraducir").attr("disabled", false);
 					if (!document.getElementById("chkRevisar").checked) {
-			   			$("#archivos").html("La traducci&oacute;n se ha realizado satisfactoriamente<br>");
+						var finalStr = "La traducci&oacute;n se ha realizado satisfactoriamente<br>";
 					} else {
 						var finalStr = "La traducci&oacute;n se ha realizado satisfactoriamente<br>" +
-						"<table><tr><td>Archivos Traducidos</td></tr>";
+						"<table>";
 						jQuery.each(res, function(i, val) {
 							finalStr += "<tr><td>" + i;
 							finalStr += "</td>";
@@ -73,8 +73,9 @@ $(document).ready(function() {
 							finalStr += "</textarea></td><td><button type='button' onClick='saveFile(\"" + i + "\")'>Guardar</button></td><td style='display:none;' id='saved_"+i+"'>Guardado!</td></tr>";
 						});
 						finalStr += "</table>";
-						$("#archivos").html(finalStr);
 					}
+					finalStr += "<tr><td><button type='button' onClick='location.reload();'>Terminar</button></td></tr>";
+					$("#archivos").html(finalStr);
 		        	});
 			});
         });
