@@ -36,7 +36,14 @@ else if (isset($_POST["archivos"])) {
 		$jsonToTraductOnArray[] = $ruta . "/" . $nombre;
 	}
 
-	$traductApi->traduct($jsonToTraductOnArray, $fromLanguage, $toLanguage);
+	echo $traductApi->traduct($jsonToTraductOnArray, $fromLanguage, $toLanguage);
+}
+else if (isset($_POST["individualFile"])) {
+	if ($apiToUse == "MicrosoftApiTranslator") {
+		$traductApi = new MicrosoftApiTranslator($clientID, $clientSecret, $authUrl, $scopeUrl, $grantType);
+	}
+
+	echo $traductApi->saveIndividualFile($_POST["individualFile"], $_POST["val"]);
 }
 
 function listar($path, &$archivos, $filesToIgnore){

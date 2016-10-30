@@ -31,6 +31,7 @@ class MicrosoftApiTranslator extends Traductor {
 
 	function traduct($jsonToTraductOnArray, $fromLanguage, $toLanguage) {
 		$finalArrayForTraductedFile = array();
+		$returnArrayForTraductedFile = array();
 
 		//Recorro todos los jsons
 		foreach($jsonToTraductOnArray as $key => $value) {
@@ -85,9 +86,11 @@ class MicrosoftApiTranslator extends Traductor {
 						foreach((array)$xmlObj[0] as $val){
 							$translatedStr = $val;
 							$finalArrayForTraductedFile[] = $lineValue[0]."=".$translatedStr;
+							$returnArrayForTraductedFile[$directoryToWrite . DIRECTORY_SEPARATOR . $file][] = $lineValue[0]."=".$translatedStr;
 						}
 					} catch (Exception $e) {
 						$finalArrayForTraductedFile[] = $e->getMessage();
+						$returnArrayForTraductedFile[$directoryToWrite . DIRECTORY_SEPARATOR . $file][] = $e->getMessage();
 					}
 				}
 				//Cierro el archivo leido
@@ -112,6 +115,17 @@ class MicrosoftApiTranslator extends Traductor {
 				}
 			}
 		}
+		return json_encode($returnArrayForTraductedFile);
+	}
+
+	function saveIndividualFile ($file, $data) {
+		//Abro el archivo
+		$handlerFinalFile = fopen($file, "w");
+		//Tomo los datos generados y los guardo
+		fwrite($handlerFinalFile, $data);
+		//Cierro el archivo nuevo
+		fclose($handlerFinalFile);
+		return $data;
 	}
 }
 

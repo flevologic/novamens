@@ -55,14 +55,42 @@ $(document).ready(function() {
 		        	method: "POST",
 		        	data: "archivos=" + JSON.stringify(archivosSeleccionados) + "&origen=" + idiomaOrigen + "&destino=" + idiomaDestino
 		   		}).done(function(res){
+					res = $.parseJSON(res);
 					toggleLoading();
 					$("#btnTraducir").attr("disabled", false);
-		   			$("#archivos").html("La traducci&oacute;n se ha realizado satisfactoriamente");
-		        });
+					if (!document.getElementById("chkRevisar").checked) {
+			   			$("#archivos").html("La traducci&oacute;n se ha realizado satisfactoriamente<br>");
+					} else {
+						var finalStr = "La traducci&oacute;n se ha realizado satisfactoriamente<br>" +
+						"<table><tr><td>Archivos Traducidos</td></tr>";
+						jQuery.each(res, function(i, val) {
+							finalStr += "<tr><td>" + i;
+							finalStr += "</td>";
+							finalStr += "<td><textarea id='"+i+"' rows='4' cols='50'>";
+							jQuery.each(val, function(iVal, valFin) {
+								finalStr += valFin;
+							});
+							finalStr += "</textarea></td><td><button type='button' onClick='saveFile(\"" + i + "\")'>Guardar</button></td><td style='display:none;' id='saved_"+i+"'>Guardado!</td></tr>";
+						});
+						finalStr += "</table>";
+						$("#archivos").html(finalStr);
+					}
+		        	});
 			});
         });
 	})
 });
+
+function saveFile(id) {
+	var myTextToSave = document.getElementById(id).value;
+  	$.ajax({
+	url: 'controller.php',
+	method: "POST",
+	data: "individualFile=" + id + "&val=" + myTextToSave
+	}).done(function(res){
+		document.getElementById("saved_" + id).style.display = "block";
+	});
+}
 
 function toggleSection(toShow = 'translate'){
 	if (toShow == 'translate') {
