@@ -13,15 +13,14 @@ $(document).ready(function() {
         	method: "POST",
         	data: "ruta=" + ruta
    		}).done(function(res){
-   					toggleLoading();
+			toggleLoading();
 
    			archivos = jQuery.parseJSON(res);
    			objHtml = renderizarTabla(archivos);
 
-			if(objHtml.cont == 0){
+			if(objHtml.cont == 0) {
 				html = "No se han encontrado archivos .properties";
-			}
-			else{
+			} else {
 				html2 = "<div id='contIdioma'><label>Seleccione idioma origen</label>&nbsp;<select id='cboIdiomaOrigen' name='idiomas'>";
 
 				for(var x=0;x < idiomas.length;x++){
@@ -33,11 +32,16 @@ $(document).ready(function() {
 				html2 += "<div id='revisarTraduccion'>Permitir modificar traducciones <input type='checkbox' id='chkRevisar'/> </div> <div id='contTraducir'><button class='boton' id='btnTraducir'>Traducir</button></div>";
 				html = html2 + objHtml.html;
 			}
+
 			$("#archivos").html(html);
 			$('#cboIdiomaOrigen').change(function(e){
 			  cambiarIdioma(archivos);
 			});
+
 			$('#btnTraducir').click(function(e){
+				$('#ruta').prop('disabled', true);
+				$('#ruta').css('background-color', '#f5f7f6');
+				$('#submitButton').hide();
 				var idiomaOrigen = $("#cboIdiomaOrigen").val();
 				var idiomaDestino = $("#cboIdiomaDestino").val();
 				var archivosSeleccionados = [];
@@ -49,6 +53,7 @@ $(document).ready(function() {
 					archivosSeleccionados.push({nombre:nombre,ruta:path,idioma:idioma});
 				});
 				toggleLoading();
+				$('#archivos').hide();
 				$("#btnTraducir").attr("disabled", true);
 			  	$.ajax({
 		        	url: 'controller.php',
@@ -61,21 +66,23 @@ $(document).ready(function() {
 					if (!document.getElementById("chkRevisar").checked) {
 						var finalStr = "La traducci&oacute;n se ha realizado satisfactoriamente<br>";
 					} else {
-						var finalStr = "La traducci&oacute;n se ha realizado satisfactoriamente<br>" +
-						"<table>";
+						// var finalStr = "La traducci&oacute;n se ha realizado satisfactoriamente<br>" +
+						var finalStr = "<h2>Revisi&oacute;n de las traducciones</h2><table style='margin-bottom:10px;'><tr><th>Archivo</th><th>Contenido</th><th>Guardar</th></tr>";
 						jQuery.each(res, function(i, val) {
-							finalStr += "<tr><td>" + i;
+							finalStr += "<tr><td class='folder'>" + i;
 							finalStr += "</td>";
 							finalStr += "<td><textarea id='"+i+"' rows='4' cols='50'>";
 							jQuery.each(val, function(iVal, valFin) {
 								finalStr += valFin;
 							});
-							finalStr += "</textarea></td><td><button type='button' onClick='saveFile(\"" + i + "\")'>Guardar</button></td><td style='display:none;' id='saved_"+i+"'>Guardado!</td></tr>";
+							finalStr += "</textarea></td><td><button type='button' class='boton' onClick='saveFile(\"" + i + "\")'>Guardar</button></td><td style='display:none;' id='saved_"+i+"'>Guardado!</td></tr>";
 						});
 						finalStr += "</table>";
 					}
-					finalStr += "<tr><td><button type='button' onClick='location.reload();'>Terminar</button></td></tr>";
+					finalStr += "<tr><td><button type='button' class='boton' onClick='location.reload();'>Terminar</button></td></tr>";
+					$('#traductappForm').hide();
 					$("#archivos").html(finalStr);
+					$('#archivos').show();
 		        	});
 			});
         });
@@ -165,7 +172,7 @@ function renderizarTabla(listArchivos){
 				var check = "<input id="+ cont +" data-ruta='"+ ruta +"' data-file='"+ nombreArchivo +"' data-idioma='"+ idioma.codigo +"' type='checkbox' checked />";
 				html1 += "<tr>";
 				html1 += "<td>" + check + "</td>";
-				html1 += "<td>" + ruta + "</td>";
+				html1 += "<td class='folder'>" + ruta + "</td>";
 				html1 += "<td>" + nombreArchivo + "</td>";
 				html1 += "<td>" + idioma.descripcion + "</td>";
 				html1 += "</tr>";
@@ -195,8 +202,6 @@ function cambiarIdioma(listArchivos){
 					codigosIdiomas.push(idioma.codigo);
 				}
 				if(idioma.codigo == filtroIdioma){
-
-
 					var check = "<input id="+ cont +" data-ruta='"+ ruta +"' data-file='"+ nombreArchivo +"' data-idioma='"+ idioma.codigo +"' type='checkbox' checked />";
 					html1 += "<tr>";
 					html1 += "<td>" + check + "</td>";
@@ -205,9 +210,6 @@ function cambiarIdioma(listArchivos){
 					html1 += "<td>" + idioma.descripcion + "</td>";
 					html1 += "</tr>";
 					cont++;
-
-
-
 				}
 			}
 

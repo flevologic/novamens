@@ -17,11 +17,11 @@
 	<div id="translate" class="section_visible">
 		<form action="controller.php" method="post" id="traductappForm" enctype="multipart/form-data">
 			<div class="directory_chooser">
-				<span>Seleccione un directorio para analizar:</span>
+				<span>Indique un directorio para analizar:</span>
         		<!--<input type="file" name="files[]" id="files" multiple="" directory="" webkitdirectory="" mozdirectory=""> -->
 				<input type="text" name="ruta" id="ruta"/>
 			</div>
-			<input class="boton" type="submit" name="submitButton" value="Analizar" />
+			<input class="boton" type="submit" name="submitButton" id="submitButton" value="Analizar" />
 		</form>
 
 		<div id="loading"></div>
