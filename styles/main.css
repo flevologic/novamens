@@ -14,6 +14,9 @@ h2 {
     font-size: 20px;
     margin-bottom: 10px;
 }
+input[type="text"], textarea {
+	background-color: #fff;
+}
 
 #header {
 	background-color: #28d5ff;
