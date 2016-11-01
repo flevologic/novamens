@@ -5,6 +5,7 @@ $(document).ready(function() {
 	codigosIdiomas = [];
 
 	$("#traductappForm").submit(function(e){
+		$('#archivos').hide();
 		toggleLoading();
 		e.preventDefault();
 		var ruta = $("#ruta").val();
@@ -34,6 +35,7 @@ $(document).ready(function() {
 			}
 
 			$("#archivos").html(html);
+			$("#archivos").show();
 			$('#cboIdiomaOrigen').change(function(e){
 			  cambiarIdioma(archivos);
 			});
