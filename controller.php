@@ -1,5 +1,6 @@
 <?php
 ini_set("error_log", "/tmp/php-error.log");
+date_default_timezone_set('America/Buenos_Aires');
 $ruta = "";
 include 'config.php';
 include 'Traductor.php';
