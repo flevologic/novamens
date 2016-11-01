@@ -1,4 +1,6 @@
 <!DOCTYPE html>
+<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+<meta content="utf-8" http-equiv="encoding">
 <link href="https://fonts.googleapis.com/css?family=Droid+Sans" rel="stylesheet">
 <link rel="stylesheet" type="text/css" href="styles/main.css">
 <script type="text/javascript" src="scripts/jquery-3.1.1.min.js"></script>
