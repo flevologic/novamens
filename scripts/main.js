@@ -64,7 +64,7 @@ $(document).ready(function() {
 					toggleLoading();
 					$("#btnTraducir").attr("disabled", false);
 					if (!document.getElementById("chkRevisar").checked) {
-						var finalStr = "La traducci&oacute;n se ha realizado satisfactoriamente<br>";
+						var finalStr = "La traducci&oacute;n se ha realizado satisfactoriamente. <br /><br />";
 					} else {
 						// var finalStr = "La traducci&oacute;n se ha realizado satisfactoriamente<br>" +
 						var finalStr = "<h2>Revisi&oacute;n de las traducciones</h2><table style='margin-bottom:10px;'><tr><th>Archivo</th><th>Contenido</th><th>Guardar</th></tr>";
