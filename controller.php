@@ -47,24 +47,27 @@ else if (isset($_POST["individualFile"])) {
 	echo $traductApi->saveIndividualFile($_POST["individualFile"], $_POST["val"]);
 }
 
-function listar($path, &$archivos, $filesToIgnore){
-	$dir = opendir($path);
-	$files = array();
-	while ($current = readdir($dir)){
-		if ($current != "." && $current != "..") {
-			if(is_dir($path.$current)) {
-				listar($path.$current.'/', $archivos, $filesToIgnore);
-			}
-    else {
-			if(preg_match("/.*\.properties/", $path.$current))
-				// echo str_replace('.properties', '', $current);
-				if (!in_array(str_replace('.properties', '', $current), $filesToIgnore)){
-					$files[] = $current;
+function listar($path, &$archivos, $filesToIgnore) {
+	$dir = @opendir($path);
+	if ($dir) {
+		$files = array();
+		while ($current = readdir($dir)){
+			if ($current != "." && $current != "..") {
+				if(is_dir($path.$current)) {
+					listar($path.$current.'/', $archivos, $filesToIgnore);
 				}
-		  }
+	    else {
+				if(preg_match("/.*\.properties/", $path.$current))
+					// echo str_replace('.properties', '', $current);
+					if (!in_array(str_replace('.properties', '', $current), $filesToIgnore)){
+						$files[] = $current;
+					}
+			  }
+			}
+		}
+		if(count($files) > 0) {
+			$archivos[$path] = $files;
 		}
 	}
-	if(count($files) > 0)
-		$archivos[$path] = $files;
-	}
+}
 
