@@ -33,6 +33,6 @@
 	</div>
 
 	<div id="logs" class="section_hidden">
-		<h1>LISTADO DE LOGS</h1>
+		<h2>No hay logs de traducciones.</h2>
 	</div>
 </div>
