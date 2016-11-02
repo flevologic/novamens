@@ -116,3 +116,36 @@ input[type="text"], textarea {
 	padding: 5px;
 	font-size: 16px;
 }
+
+#logs {
+	margin-top: 15px;
+	width:100%;
+	text-align: left;
+}
+	#logs table {
+		margin:auto;
+	}
+	#logs table th {
+		background-color: #28d5ff;
+		font-weight: bold;
+		border: 1px solid #28d5ff;
+		padding: 2px 5px;
+	}
+	#logs table th.fecha {
+		width: 75px;
+	}
+	#logs table th.idioma {
+		width: 65px;
+	}
+	#logs table tr:nth-child(odd) td{
+		background-color: #f5f7f6;
+	}
+	#logs table tr:nth-child(even) td{
+		background-color: #fff;
+	}
+	#logs table tr td {
+		padding:6px;
+	}
+	#logs table tr td.archivo {
+		font-size: 12px;
+	}

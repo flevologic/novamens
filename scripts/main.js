@@ -94,9 +94,9 @@ $(document).ready(function() {
 function saveFile(id) {
 	var myTextToSave = document.getElementById(id).value;
   	$.ajax({
-	url: 'controller.php',
-	method: "POST",
-	data: "individualFile=" + id + "&val=" + myTextToSave
+		url: 'controller.php',
+		method: "POST",
+		data: "individualFile=" + id + "&val=" + myTextToSave
 	}).done(function(res){
 		document.getElementById("saved_" + id).style.display = "block";
 	});
@@ -113,6 +113,32 @@ function toggleSection(toShow = 'translate'){
 		$('div#logs').show();
 		$('#navLogs').addClass('active');
 		$('#navTranslate').removeClass('active');
+
+		$.ajax({
+			url: 'controller.php',
+			method: "POST",
+			data: "logs=1"
+		}).done(function(res){
+			table = "";
+			log = jQuery.parseJSON(res);
+			$.each(log, function(id, registro) {
+				if (table == "") {
+					table += "<table><tr><th class='fecha'>Fecha</th><th class='idioma'>I. Origen</th><th class='idioma'>I. Destino</th><th>Archivos traducidos</th></tr>";
+				}
+				if (registro.length == 4) {
+					table += "<tr>";
+					table += "<td>" + registro[0] + "</td>";
+					table += "<td>" + registro[1] + "</td>";
+					table += "<td>" + registro[2] + "</td>";
+					table += "<td class='archivo'>" + registro[3].replace(/ - /g, "<br />") + "</td>";
+					table += "</tr>";
+				}
+			});
+			if (table != "") {
+				table += "</table>";
+			}
+			$('#logs').html(table);
+		});
 	}
 }
 
@@ -227,6 +253,3 @@ function cambiarIdioma(listArchivos){
 
 
 }
-
-
-

@@ -16,8 +16,13 @@ if (isset($_POST["ruta"])) {
 	echo json_encode($archivos);
 }
 else if (isset($_POST["archivos"])) {
+	$logFile = fopen('log.csv', 'a');
+	fwrite($logFile, date("d-m-Y H:i:s") . ',');
+
 	$fromLanguage = $_POST["origen"];
+	fwrite($logFile, $fromLanguage . ',');
 	$toLanguage   = $_POST["destino"];
+	fwrite($logFile, $toLanguage . ',');
 
 	$archivos = json_decode($_POST["archivos"]);
 
@@ -28,15 +33,23 @@ else if (isset($_POST["archivos"])) {
 	$traductApi->getToken();
 
 	$jsonToTraductOnArray = array();
-
+	$archivosTraducidos = '';
 	for($i = 0; $i < count($archivos); $i++ ){
 		$nombre = $archivos[$i]->nombre;
 		$ruta = $archivos[$i]->ruta;
 		$idioma = $archivos[$i]->idioma;
 
-		$jsonToTraductOnArray[] = $ruta . "/" . $nombre;
+		$jsonToTraductOnArray[] = $ruta . $nombre;
+
+		if ($archivosTraducidos != '') {
+			$archivosTraducidos .= ' - ';
+		}
+		$archivosTraducidos .=  $ruta . $nombre;
 	}
 
+	fwrite($logFile, $archivosTraducidos);
+	fwrite($logFile, PHP_EOL);
+	fclose($logFile);
 	echo $traductApi->traduct($jsonToTraductOnArray, $fromLanguage, $toLanguage);
 }
 else if (isset($_POST["individualFile"])) {
@@ -45,6 +58,17 @@ else if (isset($_POST["individualFile"])) {
 	}
 
 	echo $traductApi->saveIndividualFile($_POST["individualFile"], $_POST["val"]);
+}
+else if (isset($_POST["logs"])) {
+	$logFile = fopen('log.csv', 'r');
+	if ($logFile !== false) {
+		while (!feof($logFile)) {
+			$lineValue = fgets($logFile);
+			$log[] = explode(",", $lineValue);
+		}
+	}
+	fclose($logFile);
+	echo json_encode($log);
 }
 
 function listar($path, &$archivos, $filesToIgnore) {
@@ -70,4 +94,3 @@ function listar($path, &$archivos, $filesToIgnore) {
 		}
 	}
 }
-
