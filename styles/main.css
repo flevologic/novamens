@@ -135,7 +135,7 @@ input[type="text"], textarea {
 		width: 75px;
 	}
 	#logs table th.idioma {
-		width: 65px;
+		width: 50px;
 	}
 	#logs table tr:nth-child(odd) td{
 		background-color: #f5f7f6;

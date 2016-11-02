@@ -47,10 +47,13 @@ else if (isset($_POST["archivos"])) {
 		$archivosTraducidos .=  $ruta . $nombre;
 	}
 
-	fwrite($logFile, $archivosTraducidos);
+	fwrite($logFile, $archivosTraducidos.',');
+	$traductResult = $traductApi->traduct($jsonToTraductOnArray, $fromLanguage, $toLanguage);
+
+	fwrite($logFile, date("d-m-Y H:i:s"));
 	fwrite($logFile, PHP_EOL);
 	fclose($logFile);
-	echo $traductApi->traduct($jsonToTraductOnArray, $fromLanguage, $toLanguage);
+	echo $traductResult;
 }
 else if (isset($_POST["individualFile"])) {
 	if ($apiToUse == "MicrosoftApiTranslator") {
@@ -68,7 +71,7 @@ else if (isset($_POST["logs"])) {
 		}
 	}
 	fclose($logFile);
-	echo json_encode($log);
+	echo json_encode(array_reverse($log));
 }
 
 function listar($path, &$archivos, $filesToIgnore) {

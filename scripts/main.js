@@ -123,11 +123,12 @@ function toggleSection(toShow = 'translate'){
 			log = jQuery.parseJSON(res);
 			$.each(log, function(id, registro) {
 				if (table == "") {
-					table += "<table><tr><th class='fecha'>Fecha</th><th class='idioma'>I. Origen</th><th class='idioma'>I. Destino</th><th>Archivos traducidos</th></tr>";
+					table += "<table><tr><th class='fecha'>Fecha inicio</th><th class='fecha'>Fecha fin</th><th class='idioma'>Origen</th><th class='idioma'>Destino</th><th>Archivos traducidos</th></tr>";
 				}
-				if (registro.length == 4) {
+				if (registro.length == 5) {
 					table += "<tr>";
 					table += "<td>" + registro[0] + "</td>";
+					table += "<td>" + registro[4] + "</td>";
 					table += "<td>" + registro[1] + "</td>";
 					table += "<td>" + registro[2] + "</td>";
 					table += "<td class='archivo'>" + registro[3].replace(/ - /g, "<br />") + "</td>";
