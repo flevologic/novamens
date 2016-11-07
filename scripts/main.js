@@ -126,7 +126,7 @@ function toggleSection(toShow = 'translate'){
 			table = "";
 			log = jQuery.parseJSON(res);
 			$.each(log, function(id, registro) {
-				if (table == "") {
+				if (table == "" && registro.length == 5) {
 					table += "<table><tr><th class='fecha'>Fecha inicio</th><th class='fecha'>Fecha fin</th><th class='idioma'>Origen</th><th class='idioma'>Destino</th><th>Archivos traducidos</th></tr>";
 				}
 				if (registro.length == 5) {
@@ -142,7 +142,9 @@ function toggleSection(toShow = 'translate'){
 			if (table != "") {
 				table += "</table>";
 			}
-			$('#logs').html(table);
+			if (table != "") {
+				$('#logs').html(table);
+			}
 		});
 	}
 }
