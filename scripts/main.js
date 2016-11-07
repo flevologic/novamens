@@ -24,6 +24,9 @@ $(document).ready(function() {
 			} else {
 				html2 = "<div id='contIdioma'><label>Seleccione idioma origen</label>&nbsp;<select id='cboIdiomaOrigen' name='idiomas'>";
 
+				if (idiomas.length > 1) {
+					html2 += "<option value=''>Todos</option>";
+				}
 				for(var x=0;x < idiomas.length;x++){
 					html2 += "<option value='" + idiomas[x].codigo + "'>" + idiomas[x].descripcion + "</option>";
 				}
