@@ -25,7 +25,7 @@ $(document).ready(function() {
 				html2 = "<div id='contIdioma'><label>Seleccione idioma origen</label>&nbsp;<select id='cboIdiomaOrigen' name='idiomas'>";
 
 				if (idiomas.length > 1) {
-					html2 += "<option value=''>Todos</option>";
+					html2 += "<option value=''>Seleccione un idioma</option>";
 				}
 				for(var x=0;x < idiomas.length;x++){
 					html2 += "<option value='" + idiomas[x].codigo + "'>" + idiomas[x].descripcion + "</option>";
@@ -44,55 +44,59 @@ $(document).ready(function() {
 			});
 
 			$('#btnTraducir').click(function(e){
-				if ($("#contArchivos input[type=checkbox]:checked").length == 0) {
-					alert("Por favor, seleccione archivos a traducir");
+				if ($("#cboIdiomaOrigen").val() == "") {
+					alert ("Por favor seleccione un idioma origen");
 				} else {
-					$('#ruta').prop('disabled', true);
-					$('#ruta').css('background-color', '#f5f7f6');
-					$('#submitButton').hide();
-					var idiomaOrigen = $("#cboIdiomaOrigen").val();
-					var idiomaDestino = $("#cboIdiomaDestino").val();
-					archivosSeleccionados = [];
-					$("#contArchivos input[type=checkbox]:checked").each(function(){
-						//cada elemento seleccionado
-						var nombre = $(this).attr("data-file");
-						var path = $(this).attr("data-ruta");
-						var idioma = $(this).attr("data-idioma");
-						archivosSeleccionados.push({nombre:nombre,ruta:path,idioma:idioma});
-					});
-					toggleLoading();
-					$('#archivos').hide();
-					$("#btnTraducir").attr("disabled", true);
-				  	$.ajax({
-			        	url: 'controller.php',
-			        	method: "POST",
-			        	data: "archivos=" + JSON.stringify(archivosSeleccionados) + "&origen=" + idiomaOrigen + "&destino=" + idiomaDestino
-			   		}).done(function(res){
-						res = $.parseJSON(res);
+					if ($("#contArchivos input[type=checkbox]:checked").length == 0) {
+						alert("Por favor seleccione archivos a traducir");
+					} else {
+						$('#ruta').prop('disabled', true);
+						$('#ruta').css('background-color', '#f5f7f6');
+						$('#submitButton').hide();
+						var idiomaOrigen = $("#cboIdiomaOrigen").val();
+						var idiomaDestino = $("#cboIdiomaDestino").val();
+						archivosSeleccionados = [];
+						$("#contArchivos input[type=checkbox]:checked").each(function(){
+							//cada elemento seleccionado
+							var nombre = $(this).attr("data-file");
+							var path = $(this).attr("data-ruta");
+							var idioma = $(this).attr("data-idioma");
+							archivosSeleccionados.push({nombre:nombre,ruta:path,idioma:idioma});
+						});
 						toggleLoading();
-						$("#btnTraducir").attr("disabled", false);
-						if (!document.getElementById("chkRevisar").checked) {
-							var finalStr = "La traducci&oacute;n se ha realizado satisfactoriamente. <br /><br />";
-						} else {
-							// var finalStr = "La traducci&oacute;n se ha realizado satisfactoriamente<br>" +
-							var finalStr = "<h2>Revisi&oacute;n de las traducciones</h2><table style='margin-bottom:10px;'><tr><th>Archivo</th><th>Contenido</th><th>Guardar</th></tr>";
-							jQuery.each(res, function(i, val) {
-								finalStr += "<tr><td class='folder'>" + i;
-								finalStr += "</td>";
-								finalStr += "<td><textarea id='"+i+"' rows='4' cols='50'>";
-								jQuery.each(val, function(iVal, valFin) {
-									finalStr += valFin;
+						$('#archivos').hide();
+						$("#btnTraducir").attr("disabled", true);
+					  	$.ajax({
+				        	url: 'controller.php',
+				        	method: "POST",
+				        	data: "archivos=" + JSON.stringify(archivosSeleccionados) + "&origen=" + idiomaOrigen + "&destino=" + idiomaDestino
+				   		}).done(function(res){
+							res = $.parseJSON(res);
+							toggleLoading();
+							$("#btnTraducir").attr("disabled", false);
+							if (!document.getElementById("chkRevisar").checked) {
+								var finalStr = "La traducci&oacute;n se ha realizado satisfactoriamente. <br /><br />";
+							} else {
+								// var finalStr = "La traducci&oacute;n se ha realizado satisfactoriamente<br>" +
+								var finalStr = "<h2>Revisi&oacute;n de las traducciones</h2><table style='margin-bottom:10px;'><tr><th>Archivo</th><th>Contenido</th><th>Guardar</th></tr>";
+								jQuery.each(res, function(i, val) {
+									finalStr += "<tr><td class='folder'>" + i;
+									finalStr += "</td>";
+									finalStr += "<td><textarea id='"+i+"' rows='4' cols='50'>";
+									jQuery.each(val, function(iVal, valFin) {
+										finalStr += valFin;
+									});
+									finalStr += "</textarea></td><td><button type='button' class='boton' onClick='saveFile(\"" + i + "\")'>Guardar</button></td><td style='display:none;' id='saved_"+i+"'>Guardado!</td></tr>";
 								});
-								finalStr += "</textarea></td><td><button type='button' class='boton' onClick='saveFile(\"" + i + "\")'>Guardar</button></td><td style='display:none;' id='saved_"+i+"'>Guardado!</td></tr>";
-							});
-							finalStr += "</table>";
-						}
-						finalStr += "<tr><td><button type='button' class='boton' onClick='exportar();'>Exportar</button><button type='button' class='boton' onClick='location.reload();'>Terminar</button></td></tr>";
-						$('#traductappForm').hide();
-						$("#archivos").html(finalStr);
-						$('#archivos').show();
-		        	});
-			   	}
+								finalStr += "</table>";
+							}
+							finalStr += "<tr><td><button type='button' class='boton' onClick='exportar();'>Exportar</button><button type='button' class='boton' onClick='location.reload();'>Terminar</button></td></tr>";
+							$('#traductappForm').hide();
+							$("#archivos").html(finalStr);
+							$('#archivos').show();
+			        	});
+				   	}
+				}
 			});
         });
 	})
