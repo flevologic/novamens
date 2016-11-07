@@ -18,13 +18,19 @@ if (isset($_POST["ruta"])) {
 	echo json_encode($archivos);
 }
 else if (isset($_POST["archivos"])) {
-	$logFile = fopen('log.csv', 'a');
-	fwrite($logFile, date("d-m-Y H:i:s") . ',');
+	$logFile = @fopen('log.csv', 'a');
+	if ($logFile) {
+		fwrite($logFile, date("d-m-Y H:i:s") . ',');
+	}
 
 	$fromLanguage = $_POST["origen"];
-	fwrite($logFile, $fromLanguage . ',');
+	if ($logFile) {
+		fwrite($logFile, $fromLanguage . ',');
+	}
 	$toLanguage   = $_POST["destino"];
-	fwrite($logFile, $toLanguage . ',');
+	if ($logFile) {
+		fwrite($logFile, $toLanguage . ',');
+	}
 
 	$archivos = json_decode($_POST["archivos"]);
 
@@ -48,13 +54,16 @@ else if (isset($_POST["archivos"])) {
 		}
 		$archivosTraducidos .=  $ruta . $nombre;
 	}
-
-	fwrite($logFile, $archivosTraducidos.',');
+	if ($logFile) {
+		fwrite($logFile, $archivosTraducidos.',');
+	}
 	$traductResult = $traductApi->traduct($jsonToTraductOnArray, $fromLanguage, $toLanguage);
 
-	fwrite($logFile, date("d-m-Y H:i:s"));
-	fwrite($logFile, PHP_EOL);
-	fclose($logFile);
+	if ($logFile) {
+		fwrite($logFile, date("d-m-Y H:i:s"));
+		fwrite($logFile, PHP_EOL);
+		fclose($logFile);
+	}
 	echo $traductResult;
 }
 else if (isset($_POST["individualFile"])) {
@@ -95,7 +104,7 @@ else if (isset($_POST["archivosExportar"])){
 
 	 	$linea = $reg->nombre . $sep . $reg->ruta . $sep . $traduccionActual . $sep . "" . PHP_EOL;
 		fwrite($f,$linea);
-	 
+
 	}
 	fclose($f);
 
