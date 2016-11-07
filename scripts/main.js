@@ -3,7 +3,7 @@ $(document).ready(function() {
 	archivos = "";
 	idiomas = [];
 	codigosIdiomas = [];
-
+	archivosSeleccionados = [];
 	$("#traductappForm").submit(function(e){
 		$('#archivos').hide();
 		toggleLoading();
@@ -46,7 +46,7 @@ $(document).ready(function() {
 				$('#submitButton').hide();
 				var idiomaOrigen = $("#cboIdiomaOrigen").val();
 				var idiomaDestino = $("#cboIdiomaDestino").val();
-				var archivosSeleccionados = [];
+				archivosSeleccionados = [];
 				$("#contArchivos input[type=checkbox]:checked").each(function(){
 					//cada elemento seleccionado
 					var nombre = $(this).attr("data-file");
@@ -81,7 +81,7 @@ $(document).ready(function() {
 						});
 						finalStr += "</table>";
 					}
-					finalStr += "<tr><td><button type='button' class='boton' onClick='location.reload();'>Terminar</button></td></tr>";
+					finalStr += "<tr><td><button type='button' class='boton' onClick='exportar();'>Exportar</button><button type='button' class='boton' onClick='location.reload();'>Terminar</button></td></tr>";
 					$('#traductappForm').hide();
 					$("#archivos").html(finalStr);
 					$('#archivos').show();
@@ -252,5 +252,17 @@ function cambiarIdioma(listArchivos){
 		$("#contArchivos").html(objHtml.html);
 	}
 
+
+}
+
+function exportar(){
+	console.log(archivosSeleccionados);
+	$.ajax({
+		url: 'controller.php',
+		method: "POST",
+		data: "archivosExportar=" + JSON.stringify(archivosSeleccionados)
+	}).done(function(res){
+		//document.getElementById("saved_" + id).style.display = "block";
+	});
 
 }

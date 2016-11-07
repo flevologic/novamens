@@ -8,6 +8,8 @@ include 'filestoignore.php';
 include 'AccessTokenAuthentication.php';
 include 'HTTPTranslator.php';
 include 'MicrosoftApiTranslator.php';
+include 'ExportarArchivos.php';
+
 
 if (isset($_POST["ruta"])) {
 	$ruta = $_POST["ruta"];
@@ -72,6 +74,31 @@ else if (isset($_POST["logs"])) {
 	}
 	fclose($logFile);
 	echo json_encode(array_reverse($log));
+}
+else if (isset($_POST["archivosExportar"])){
+	$archivos = json_decode($_POST["archivosExportar"]);
+
+	$f = fopen("exportar.csv","w");
+	$sep = ";"; //separador
+	fwrite($f,"nombre;ruta;actual;modificacion".PHP_EOL);
+	foreach($archivos as $reg ) {
+		//obtengo la traduccion de cada archivo
+		$arch = fopen($reg->ruta.$reg->nombre,"r");
+		$traduccionActual="";
+		while (!feof($arch)) {
+			$traduccionActual .= trim(fgets($arch));
+
+		}
+		var_dump($traduccionActual);
+		//Cierro el archivo leido
+		fclose($arch);
+
+	 	$linea = $reg->nombre . $sep . $reg->ruta . $sep . $traduccionActual . $sep . "" . PHP_EOL;
+		fwrite($f,$linea);
+	 
+	}
+	fclose($f);
+
 }
 
 function listar($path, &$archivos, $filesToIgnore) {
