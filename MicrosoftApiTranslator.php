@@ -69,24 +69,26 @@ class MicrosoftApiTranslator extends Traductor {
 							$lineValue[1] .= "=".$lineValue[$i];
 						}
 					}
-		
+
 					//Mando a traducir
 					try {
-						$params = "text=".urlencode(utf8_encode($lineValue[1]))."&to=".$toLanguage."&from=".$fromLanguage;
-						$translateUrl = "http://api.microsofttranslator.com/v2/Http.svc/Translate?$params";
-		
-						//Create the Translator Object.
-						$translatorObj = new HTTPTranslator();
-						    
-						//Get the curlResponse.
-						$curlResponse = $translatorObj->curlRequest($translateUrl, $this->authHeader);
-						    
-						//Interprets a string of XML into an object.
-						$xmlObj = simplexml_load_string($curlResponse);
-						foreach((array)$xmlObj[0] as $val){
-							$translatedStr = $val;
-							$finalArrayForTraductedFile[] = $lineValue[0]."=".$translatedStr;
-							$returnArrayForTraductedFile[$directoryToWrite . DIRECTORY_SEPARATOR . $file][] = $lineValue[0]."=".$translatedStr;
+						if (isset($lineValue[1])) {
+							$params = "text=".urlencode(utf8_encode($lineValue[1]))."&to=".$toLanguage."&from=".$fromLanguage;
+							$translateUrl = "http://api.microsofttranslator.com/v2/Http.svc/Translate?$params";
+
+							//Create the Translator Object.
+							$translatorObj = new HTTPTranslator();
+
+							//Get the curlResponse.
+							$curlResponse = $translatorObj->curlRequest($translateUrl, $this->authHeader);
+
+							//Interprets a string of XML into an object.
+							$xmlObj = simplexml_load_string($curlResponse);
+							foreach((array)$xmlObj[0] as $val){
+								$translatedStr = $val;
+								$finalArrayForTraductedFile[] = $lineValue[0]."=".$translatedStr;
+								$returnArrayForTraductedFile[$directoryToWrite . DIRECTORY_SEPARATOR . $file][] = $lineValue[0]."=".$translatedStr;
+							}
 						}
 					} catch (Exception $e) {
 						$finalArrayForTraductedFile[] = $e->getMessage();
