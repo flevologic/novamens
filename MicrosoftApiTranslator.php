@@ -53,7 +53,11 @@ class MicrosoftApiTranslator extends Traductor {
 				if ($pos === false) {
 					$pos = strpos($fileExtension, ".");
 				}
-				$file = substr($fileExtension, 0, $pos) . "_" . $toLanguage . ".properties";
+				if ($toLanguage != "en") {
+					$file = substr($fileExtension, 0, $pos) . "_" . $toLanguage . ".properties";
+				} else {
+					$file = substr($fileExtension, 0, $pos) . ".properties";
+				}
 
 				//Leo cada línea del archivo
 				while (!feof($fileToTraduct)) {
