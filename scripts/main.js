@@ -90,7 +90,7 @@ $(document).ready(function() {
 								});
 								finalStr += "</table>";
 							}
-							finalStr += "<tr><td><button type='button' class='boton' onClick='exportar();'>Exportar</button><button type='button' class='boton' onClick='location.reload();'>Terminar</button></td></tr>";
+							finalStr += "<tr><td><button type='button' class='boton exportar' onClick='exportar();'>Exportar</button><button type='button' class='boton' onClick='location.reload();'>Terminar</button></td></tr>";
 							$('#traductappForm').hide();
 							$("#archivos").html(finalStr);
 							$('#archivos').show();

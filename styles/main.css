@@ -116,6 +116,9 @@ input[type="text"], textarea {
 	padding: 5px;
 	font-size: 16px;
 }
+.exportar {
+	margin-right: 15px;
+}
 
 #logs {
 	margin-top: 15px;
