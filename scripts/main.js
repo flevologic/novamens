@@ -4,6 +4,8 @@ $(document).ready(function() {
 	idiomas = [];
 	codigosIdiomas = [];
 	archivosSeleccionados = [];
+	idiomaOrigen="";
+	idiomaDestino="";
 	$("#traductappForm").submit(function(e){
 		$('#archivos').hide();
 		toggleLoading();
@@ -53,8 +55,8 @@ $(document).ready(function() {
 						$('#ruta').prop('disabled', true);
 						$('#ruta').css('background-color', '#f5f7f6');
 						$('#submitButton').hide();
-						var idiomaOrigen = $("#cboIdiomaOrigen").val();
-						var idiomaDestino = $("#cboIdiomaDestino").val();
+						idiomaOrigen = $("#cboIdiomaOrigen").val();
+						idiomaDestino = $("#cboIdiomaDestino").val();
 						archivosSeleccionados = [];
 						$("#contArchivos input[type=checkbox]:checked").each(function(){
 							//cada elemento seleccionado
@@ -273,8 +275,9 @@ function exportar(){
 	$.ajax({
 		url: 'controller.php',
 		method: "POST",
-		data: "archivosExportar=" + JSON.stringify(archivosSeleccionados)
+		data: "archivosExportar=" + JSON.stringify(archivosSeleccionados) + "&idiomaDestino=" + idiomaDestino
 	}).done(function(res){
+		alert("Traduccion exportada!");
 		//document.getElementById("saved_" + id).style.display = "block";
 	});
 

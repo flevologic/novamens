@@ -86,24 +86,85 @@ else if (isset($_POST["logs"])) {
 }
 else if (isset($_POST["archivosExportar"])){
 	$archivos = json_decode($_POST["archivosExportar"]);
-
-	$f = fopen("exportar.csv","w");
+	$fecha = new DateTime();
+	$date = $fecha->getTimestamp();
+	$f = fopen("exportacion_" . $date . ".csv","w");
 	$sep = ";"; //separador
-	fwrite($f,"nombre;ruta;actual;modificacion".PHP_EOL);
+	fwrite($f,"nombre;ruta;".PHP_EOL);
 	foreach($archivos as $reg ) {
 		//obtengo la traduccion de cada archivo
 		$arch = fopen($reg->ruta.$reg->nombre,"r");
+		fwrite($f,$reg->nombre . $sep . $reg->ruta . $sep.PHP_EOL);
 		$traduccionActual="";
+		$aArchivo = array();
+		fwrite($f,"etiqueta;antes;actual;modificado".PHP_EOL);
 		while (!feof($arch)) {
-			$traduccionActual .= trim(fgets($arch));
+			//$traduccionActual .= trim(fgets($arch));
+			$contEtiquetas = trim(fgets($arch));
+			if($contEtiquetas != ""){
+				//Separo Key Values
+				$lineValue = explode("=",$contEtiquetas);
+				//Contemplo si hay '=' en el value
+				if (sizeof($lineValue) > 2) {
+					//Uno los value
+					for($i = 2; $i < sizeof($lineValue); $i++) {
+						$lineValue[1] .= "=".$lineValue[$i];
+					}
+				}
+				$aArchivo[$lineValue[0]]["antes"] = $lineValue[1];
+
+			}
+			
 
 		}
-		var_dump($traduccionActual);
 		//Cierro el archivo leido
 		fclose($arch);
 
-	 	$linea = $reg->nombre . $sep . $reg->ruta . $sep . $traduccionActual . $sep . "" . PHP_EOL;
-		fwrite($f,$linea);
+
+
+		//Abro el archivo traducido
+		$idiomaDestino = $_POST["idiomaDestino"];
+		//Armo el nombre del archivo
+		$nombreArch = "";
+		$aNombreArch = explode(".",$reg->nombre);
+		$nombreSufijoArch = $idiomaDestino . ".properties";
+
+		for($i=0;$i < count($aNombreArch)-1;$i++){
+			$nombreArch .= $aNombreArch[$i];
+		}
+		$nombreArch .= "_" . $nombreSufijoArch;
+
+		$archTraducido = fopen($reg->ruta.$nombreArch,"r");
+
+		while (!feof($archTraducido)) {
+			//$traduccionActual .= trim(fgets($arch));
+			$contEtiquetas = trim(fgets($archTraducido));
+			if($contEtiquetas != ""){
+				//Separo Key Values
+				$lineValue = explode("=",$contEtiquetas);
+				//Contemplo si hay '=' en el value
+				if (sizeof($lineValue) > 2) {
+					//Uno los value
+					for($i = 2; $i < sizeof($lineValue); $i++) {
+						$lineValue[1] .= "=".$lineValue[$i];
+					}
+				}
+
+				$aArchivo[$lineValue[0]]["actual"] = $lineValue[1];
+			}
+		}
+		//Cierro el archivo leido
+		fclose($archTraducido);
+
+		foreach($aArchivo as $clave => $valor){
+			$linea = $clave . $sep . $valor["antes"] .$sep . $valor["actual"] . $sep . "" . PHP_EOL;
+			fwrite($f,$linea);
+		}
+
+		
+			
+	 	//$linea = $traduccionActual . $sep . "" . PHP_EOL;
+		//fwrite($f,$linea);
 
 	}
 	fclose($f);
