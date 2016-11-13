@@ -37,6 +37,7 @@ class MicrosoftApiTranslator extends Traductor {
 		foreach($jsonToTraductOnArray as $key => $value) {
 
 			$finalArrayForTraductedFile = array();
+			$finalArrayForOldKeys = array();
 
 			//Abro el archivo
 			$fileToTraduct = fopen($value, "r");
@@ -108,13 +109,28 @@ class MicrosoftApiTranslator extends Traductor {
 					$finalFile = $directoryToWrite . DIRECTORY_SEPARATOR . $file;
 					//Abro el nuevo archivo
 					if (file_exists($finalFile)) {
+						$handlerFinalFile = fopen($finalFile, "r");
+						while (!feof($handlerFinalFile)) {
+							$finalArrayForOldKeys[] = fgets($handlerFinalFile);
+						}
+						fclose($handlerFinalFile);
 						$handlerFinalFile = fopen($finalFile, "a");
+						//Recorro los datos generados y los guardo
+						foreach ($finalArrayForTraductedFile as $clave => $valor) {
+							$newVal = explode("=", $valor);
+							//Chequeo si el key existe en las traducciones viejas
+							if (!$this->checkIfKeyExists($newVal[0], $finalArrayForOldKeys)) {
+								//No Existe. Lo Grabo
+								fwrite($handlerFinalFile, $valor);
+							}
+							
+						}
 					} else {
 						$handlerFinalFile = fopen($finalFile, "w");
-					}
-					//Recorro los datos generados y los guardo
-					for($i = 0; $i < sizeof($finalArrayForTraductedFile); $i++) {
-						fwrite($handlerFinalFile, $finalArrayForTraductedFile[$i]);
+						//Recorro los datos generados y los guardo
+						foreach ($finalArrayForTraductedFile as $clave => $valor) {
+							fwrite($handlerFinalFile, $valor);
+						}
 					}
 					//Cierro el archivo nuevo
 					fclose($handlerFinalFile);
@@ -132,6 +148,17 @@ class MicrosoftApiTranslator extends Traductor {
 		//Cierro el archivo nuevo
 		fclose($handlerFinalFile);
 		return $data;
+	}
+
+	function checkIfKeyExists($key, $oldValues) {
+		//Recorro los viejos valores
+		for($i = 0; $i < sizeOf($oldValues); $i++) {
+			$oldVal = explode("=", $oldValues[$i]);
+			if ($key == $oldVal[0]) {
+				return true;
+			}
+		}
+		return false;
 	}
 }
 
