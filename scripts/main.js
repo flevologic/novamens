@@ -115,7 +115,7 @@ function saveFile(id) {
 	});
 }
 
-function toggleSection(toShow = 'translate'){
+function toggleSection(toShow = 'translate') {
 	if (toShow == 'translate') {
 		$('div#logs').hide();
 		$('div#translate').show();
@@ -131,7 +131,7 @@ function toggleSection(toShow = 'translate'){
 			url: 'controller.php',
 			method: "POST",
 			data: "logs=1"
-		}).done(function(res){
+		}).done(function(res) {
 			table = "";
 			log = jQuery.parseJSON(res);
 			$.each(log, function(id, registro) {
@@ -162,15 +162,15 @@ function toggleLoading(e){
 	$('#loading').toggle();
 }
 
-function obtenerIdioma(archivo){
+function obtenerIdioma(archivo) {
 	var nombre = archivo.split(".");
 	nombre.pop();
 	nombre = nombre.join(".");
 	var aux = nombre.split("_");
 	var idioma = aux.pop().toLowerCase();
 	var objIdioma = {};
-	if(idioma.length > 0 && idioma.length < 3){
-		switch(idioma){
+	if (idioma.length > 0 && idioma.length < 3) {
+		switch(idioma) {
 			case "es":
 				objIdioma.descripcion = "Espa&ntilde;ol";
 				objIdioma.codigo = "es";
@@ -189,51 +189,47 @@ function obtenerIdioma(archivo){
 			break;
 		}
 	}
-	else
-	{
+	else {
 		objIdioma.descripcion = "Ingl&eacute;s";
 		objIdioma.codigo = "en";
 	}
 
 	return objIdioma;
-
 }
 
-function renderizarTabla(listArchivos){
+function renderizarTabla(listArchivos) {
 	html1 = "<div id='contArchivos'><table><tr><th></th><th>Carpeta</th><th>Archivo</th><th>Idioma</th></tr>";
-		var cont = 0;
-		$.each( listArchivos, function( ruta, archivo ) {
-			for (var i=0; i < archivo.length; i++) {
-				var nombreArchivo = archivo[i];
-				var arch = nombreArchivo.split(".");
-				var idioma = obtenerIdioma(nombreArchivo);
+	var cont = 0;
+	$.each(listArchivos, function( ruta, archivo ) {
+		for (var i=0; i < archivo.length; i++) {
+			var nombreArchivo = archivo[i];
+			var arch = nombreArchivo.split(".");
+			var idioma = obtenerIdioma(nombreArchivo);
 
-				if(codigosIdiomas.indexOf(idioma.codigo) === -1){
-					idiomas.push(idioma);
-					codigosIdiomas.push(idioma.codigo);
-				}
-
-				var check = "<input id="+ cont +" data-ruta='"+ ruta +"' data-file='"+ nombreArchivo +"' data-idioma='"+ idioma.codigo +"' type='checkbox' checked />";
-				html1 += "<tr>";
-				html1 += "<td>" + check + "</td>";
-				html1 += "<td class='folder'>" + ruta + "</td>";
-				html1 += "<td>" + nombreArchivo + "</td>";
-				html1 += "<td>" + idioma.descripcion + "</td>";
-				html1 += "</tr>";
-				cont++;
+			if(codigosIdiomas.indexOf(idioma.codigo) === -1){
+				idiomas.push(idioma);
+				codigosIdiomas.push(idioma.codigo);
 			}
 
-		});
-
-		html1 += "</table></div>";
+			var check = "<input id="+ cont +" data-ruta='"+ ruta +"' data-file='"+ nombreArchivo +"' data-idioma='"+ idioma.codigo +"' type='checkbox' checked />";
+			html1 += "<tr>";
+			html1 += "<td>" + check + "</td>";
+			html1 += "<td class='folder'>" + ruta + "</td>";
+			html1 += "<td>" + nombreArchivo + "</td>";
+			html1 += "<td>" + idioma.descripcion + "</td>";
+			html1 += "</tr>";
+			cont++;
+		}
+	});
+	html1 += "</table></div>";
 
 	return {cont:cont,html:html1};
 }
 
-function cambiarIdioma(listArchivos){
+function cambiarIdioma(listArchivos) {
 	var filtroIdioma = $("#cboIdiomaOrigen").val();
 	var newArray = [];
-	if(filtroIdioma != ""){
+	if (filtroIdioma != "") {
 		html1 = "<div id='contArchivos'><table><tr><th></th><th>Carpeta</th><th>Archivo</th><th>Idioma</th></tr>";
 		var cont = 0;
 		$.each( listArchivos, function( ruta, archivo ) {
@@ -241,11 +237,11 @@ function cambiarIdioma(listArchivos){
 				var nombreArchivo = archivo[i];
 				var arch = nombreArchivo.split(".");
 				var idioma = obtenerIdioma(nombreArchivo);
-				if(codigosIdiomas.indexOf(idioma.codigo) === -1){
+				if(codigosIdiomas.indexOf(idioma.codigo) === -1) {
 					idiomas.push(idioma);
 					codigosIdiomas.push(idioma.codigo);
 				}
-				if(idioma.codigo == filtroIdioma){
+				if (idioma.codigo == filtroIdioma) {
 					var check = "<input id="+ cont +" data-ruta='"+ ruta +"' data-file='"+ nombreArchivo +"' data-idioma='"+ idioma.codigo +"' type='checkbox' checked />";
 					html1 += "<tr>";
 					html1 += "<td>" + check + "</td>";
@@ -261,24 +257,19 @@ function cambiarIdioma(listArchivos){
 		html1 += "</table></div>";
 		$("#contArchivos").html(html1);
 	}
-	else
-	{
+	else {
 		objHtml = renderizarTabla(listArchivos);
 		$("#contArchivos").html(objHtml.html);
 	}
-
-
 }
 
 function exportar(){
-	console.log(archivosSeleccionados);
 	$.ajax({
 		url: 'controller.php',
 		method: "POST",
 		data: "archivosExportar=" + JSON.stringify(archivosSeleccionados) + "&idiomaDestino=" + idiomaDestino
 	}).done(function(res){
-		alert("Traduccion exportada!");
-		//document.getElementById("saved_" + id).style.display = "block";
+		var win = window.open(res, '_blank');
+  		win.focus();
 	});
-
 }

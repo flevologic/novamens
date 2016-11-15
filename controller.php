@@ -88,8 +88,10 @@ else if (isset($_POST["archivosExportar"])){
 	$archivos = json_decode($_POST["archivosExportar"]);
 	$fecha = new DateTime();
 	$date = $fecha->getTimestamp();
-	$f = fopen("exportacion_" . $date . ".csv","w");
+	$finalFile = "exportacion_" . $date . ".csv";
+	$f = fopen($finalFile,"w");
 	$sep = ";"; //separador
+
 	fwrite($f,"nombre;ruta;".PHP_EOL);
 	foreach($archivos as $reg ) {
 		//obtengo la traduccion de cada archivo
@@ -112,15 +114,10 @@ else if (isset($_POST["archivosExportar"])){
 					}
 				}
 				$aArchivo[$lineValue[0]]["antes"] = $lineValue[1];
-
 			}
-			
-
 		}
 		//Cierro el archivo leido
 		fclose($arch);
-
-
 
 		//Abro el archivo traducido
 		$idiomaDestino = $_POST["idiomaDestino"];
@@ -132,14 +129,14 @@ else if (isset($_POST["archivosExportar"])){
 		for($i=0;$i < count($aNombreArch)-1;$i++){
 			$nombreArch .= $aNombreArch[$i];
 		}
-		$nombreArch .= "_" . $nombreSufijoArch;
 
+		$nombreArch .= "_" . $nombreSufijoArch;
 		$archTraducido = fopen($reg->ruta.$nombreArch,"r");
 
 		while (!feof($archTraducido)) {
 			//$traduccionActual .= trim(fgets($arch));
 			$contEtiquetas = trim(fgets($archTraducido));
-			if($contEtiquetas != ""){
+			if($contEtiquetas != "") {
 				//Separo Key Values
 				$lineValue = explode("=",$contEtiquetas);
 				//Contemplo si hay '=' en el value
@@ -156,19 +153,12 @@ else if (isset($_POST["archivosExportar"])){
 		//Cierro el archivo leido
 		fclose($archTraducido);
 
-		foreach($aArchivo as $clave => $valor){
-			$linea = $clave . $sep . $valor["antes"] .$sep . $valor["actual"] . $sep . "" . PHP_EOL;
+		foreach($aArchivo as $clave => $valor) {
+			$linea = $clave . $sep . $valor["antes"] . $sep . $valor["actual"] . $sep . "" . PHP_EOL;
 			fwrite($f,$linea);
 		}
-
-		
-			
-	 	//$linea = $traduccionActual . $sep . "" . PHP_EOL;
-		//fwrite($f,$linea);
-
 	}
-	fclose($f);
-
+	echo $finalFile;
 }
 
 function listar($path, &$archivos, $filesToIgnore) {
