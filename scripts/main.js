@@ -101,7 +101,7 @@ $(document).ready(function() {
 				}
 			});
         });
-	})
+	});
 });
 
 function saveFile(id) {
@@ -118,14 +118,19 @@ function saveFile(id) {
 function toggleSection(toShow = 'translate') {
 	if (toShow == 'translate') {
 		$('div#logs').hide();
+		$('div#importar').hide();
 		$('div#translate').show();
 		$('#navTranslate').addClass('active');
 		$('#navLogs').removeClass('active');
-	} else {
+		$('#navImportar').removeClass('active');
+
+	} else if(toShow == 'logs'){
 		$('div#translate').hide();
+		$('div#importar').hide();
 		$('div#logs').show();
 		$('#navLogs').addClass('active');
 		$('#navTranslate').removeClass('active');
+		$('#navImportar').removeClass('active');
 
 		$.ajax({
 			url: 'controller.php',
@@ -155,6 +160,15 @@ function toggleSection(toShow = 'translate') {
 				$('#logs').html(table);
 			}
 		});
+	}
+	else if(toShow == 'importar'){
+		$('div#logs').hide();
+		$('div#translate').hide();
+		$('div#importar').show();
+		$('#navImportar').addClass('active');
+		$('#navLogs').removeClass('active');
+		$('#navTranslate').removeClass('active');
+
 	}
 }
 

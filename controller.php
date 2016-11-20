@@ -8,8 +8,6 @@ include 'filestoignore.php';
 include 'AccessTokenAuthentication.php';
 include 'HTTPTranslator.php';
 include 'MicrosoftApiTranslator.php';
-include 'ExportarArchivos.php';
-
 
 if (isset($_POST["ruta"])) {
 	$ruta = $_POST["ruta"];
@@ -86,20 +84,23 @@ else if (isset($_POST["logs"])) {
 }
 else if (isset($_POST["archivosExportar"])){
 	$archivos = json_decode($_POST["archivosExportar"]);
+	$idiomaDestino = $_POST["idiomaDestino"];
 	$fecha = new DateTime();
 	$date = $fecha->getTimestamp();
 	$finalFile = "exportacion_" . $date . ".csv";
 	$f = fopen($finalFile,"w");
 	$sep = ";"; //separador
-
-	fwrite($f,"nombre;ruta;".PHP_EOL);
+	$fila = "";
+	fwrite($f,"Nombre;Ruta;Idioma Origen;Idioma Destino;Etiqueta;Valor Anterior;Valor Actual;Correccion".PHP_EOL);
 	foreach($archivos as $reg ) {
 		//obtengo la traduccion de cada archivo
 		$arch = fopen($reg->ruta.$reg->nombre,"r");
-		fwrite($f,$reg->nombre . $sep . $reg->ruta . $sep.PHP_EOL);
+		//fwrite($f,$reg->nombre . $sep . $reg->ruta . $sep.PHP_EOL);
+		$fila = $reg->nombre . $sep . $reg->ruta . $sep . $reg->idioma . $sep . $idiomaDestino;
+
 		$traduccionActual="";
 		$aArchivo = array();
-		fwrite($f,"etiqueta;antes;actual;modificado".PHP_EOL);
+		//fwrite($f,"etiqueta;antes;actual;modificado".PHP_EOL);
 		while (!feof($arch)) {
 			//$traduccionActual .= trim(fgets($arch));
 			$contEtiquetas = trim(fgets($arch));
@@ -120,7 +121,6 @@ else if (isset($_POST["archivosExportar"])){
 		fclose($arch);
 
 		//Abro el archivo traducido
-		$idiomaDestino = $_POST["idiomaDestino"];
 		//Armo el nombre del archivo
 		$nombreArch = "";
 		$aNombreArch = explode(".",$reg->nombre);
@@ -155,10 +155,21 @@ else if (isset($_POST["archivosExportar"])){
 
 		foreach($aArchivo as $clave => $valor) {
 			$linea = $clave . $sep . $valor["antes"] . $sep . $valor["actual"] . $sep . "" . PHP_EOL;
-			fwrite($f,$linea);
+			$filaAux = $fila;
+			$filaAux .= $sep . $linea;
+			fwrite($f,$filaAux);
 		}
 	}
 	echo $finalFile;
+}
+else if(isset($_FILES["archivosImportar"])){
+	$nombreCompleto = $_FILES['archivosImportar']['name'];
+
+	$nombreFichero = "importar.csv";
+	move_uploaded_file($_FILES['archivosImportar']['tmp_name'], $nombreFichero); 
+	importarArchivo();
+
+
 }
 
 function listar($path, &$archivos, $filesToIgnore) {
@@ -183,4 +194,67 @@ function listar($path, &$archivos, $filesToIgnore) {
 			$archivos[$path] = $files;
 		}
 	}
+}
+
+function importarArchivo(){
+	$importFile = fopen('importar.csv', 'r');
+
+	if ($importFile !== false) {
+		if(!feof($importFile))
+			$titulos = fgets($importFile);
+			$archivoAnterior = "";
+		while (!feof($importFile)) {
+			$lineValue = fgets($importFile);
+			$campos = explode(";", $lineValue);
+
+			//Campos: nombre-ruta-idiomaOrigen-idiomaDestino-etiqueta,antes,actual,correccion
+			$nombreArchivo = $campos[0];
+			$ruta = $campos[1];
+			$idiomaDestino = $campos[3];
+
+			$nombreArch = "";
+			$aNombreArch = explode(".",$nombreArchivo);
+			$nombreSufijoArch = $idiomaDestino . ".properties";
+
+			for($i=0;$i < count($aNombreArch)-1;$i++){
+				$nombreArch .= $aNombreArch[$i];
+			}
+
+			$nombreArch .= "_" . $nombreSufijoArch;
+			$nombreArchivo = $ruta . $nombreArch;
+			if (!file_exists($nombreArchivo)){
+				continue;
+			}
+
+
+			if($nombreArchivo != $archivoAnterior){
+				$archivoAnterior = $nombreArchivo;
+				//Cierro el archivo nuevo
+				fclose($archOpen);
+				//Abro el archivo
+				$archOpen = fopen($nombreArchivo, "w");
+			}
+				
+
+			$etiqueta = $campos[4];
+			$textoActual = $campos[6];
+			$textoCorreccion = trim($campos[7]);
+
+			if($textoCorreccion == ""){
+				$data = $etiqueta . '=' . $textoActual;
+			}
+			else{
+				$data = $etiqueta . '=' . $textoCorreccion;
+			}
+
+			
+			//Tomo los datos generados y los guardo
+			fwrite($archOpen, $data.PHP_EOL);
+		}
+		fclose($importFile);
+	}
+	else{
+		header("Location:index.php?importar=0");
+	}
+	header("Location:index.php?importar=1");
 }
