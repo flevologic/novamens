@@ -105,9 +105,7 @@ $(document).ready(function() {
 });
 
 function saveFile(id) {
-	alert(id);
 	var myTextToSave = document.getElementById(id).value;
-	alert(myTextToSave);
   	$.ajax({
 		url: 'controller.php',
 		method: "POST",
