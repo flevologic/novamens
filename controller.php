@@ -166,7 +166,7 @@ else if(isset($_FILES["archivosImportar"])){
 	$nombreCompleto = $_FILES['archivosImportar']['name'];
 
 	$nombreFichero = "importar.csv";
-	move_uploaded_file($_FILES['archivosImportar']['tmp_name'], $nombreFichero); 
+	move_uploaded_file($_FILES['archivosImportar']['tmp_name'], $nombreFichero);
 	importarArchivo();
 
 
@@ -198,6 +198,7 @@ function listar($path, &$archivos, $filesToIgnore) {
 
 function importarArchivo(){
 	$importFile = fopen('importar.csv', 'r');
+	$delimiter = detectDelimiter('importar.csv');
 
 	if ($importFile !== false) {
 		if(!feof($importFile))
@@ -205,7 +206,7 @@ function importarArchivo(){
 			$archivoAnterior = "";
 		while (!feof($importFile)) {
 			$lineValue = fgets($importFile);
-			$campos = explode(";", $lineValue);
+			$campos = explode($delimiter, $lineValue);
 
 			//Campos: nombre-ruta-idiomaOrigen-idiomaDestino-etiqueta,antes,actual,correccion
 			$nombreArchivo = $campos[0];
@@ -228,7 +229,7 @@ function importarArchivo(){
 
 			if($archivoAnterior == ""){
 				$archOpen = fopen($nombreArchivo, "w");
-				$archivoAnterior = $nombreArchivo; 
+				$archivoAnterior = $nombreArchivo;
 			}
 
 
@@ -239,7 +240,7 @@ function importarArchivo(){
 				//Abro el archivo
 				$archOpen = fopen($nombreArchivo, "w");
 			}
-				
+
 
 			$etiqueta = $campos[4];
 			$textoActual = $campos[6];
@@ -252,7 +253,7 @@ function importarArchivo(){
 				$data = $etiqueta . '=' . $textoCorreccion;
 			}
 
-			
+
 			//Tomo los datos generados y los guardo
 			fwrite($archOpen, $data.PHP_EOL);
 		}
@@ -263,4 +264,23 @@ function importarArchivo(){
 		header("Location:index.php?importar=0");
 	}
 	header("Location:index.php?importar=1");
+}
+
+function detectDelimiter($csvFile)
+{
+    $delimiters = array(
+        ';' => 0,
+        ',' => 0,
+        "\t" => 0,
+        "|" => 0
+    );
+
+    $handle = fopen($csvFile, "r");
+    $firstLine = fgets($handle);
+    fclose($handle);
+    foreach ($delimiters as $delimiter => &$count) {
+        $count = count(str_getcsv($firstLine, $delimiter));
+    }
+
+    return array_search(max($delimiters), $delimiters);
 }
