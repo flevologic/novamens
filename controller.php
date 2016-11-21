@@ -226,6 +226,11 @@ function importarArchivo(){
 				continue;
 			}
 
+			if($archivoAnterior == ""){
+				$archOpen = fopen($nombreArchivo, "w");
+				$archivoAnterior = $nombreArchivo; 
+			}
+
 
 			if($nombreArchivo != $archivoAnterior){
 				$archivoAnterior = $nombreArchivo;
@@ -251,6 +256,7 @@ function importarArchivo(){
 			//Tomo los datos generados y los guardo
 			fwrite($archOpen, $data.PHP_EOL);
 		}
+		fclose($archOpen);
 		fclose($importFile);
 	}
 	else{

@@ -92,7 +92,7 @@ $(document).ready(function() {
 								});
 								finalStr += "</table>";
 							}
-							finalStr += "<tr><td><button type='button' class='boton exportar' onClick='exportar();'>Exportar</button><button type='button' class='boton' onClick='location.reload();'>Terminar</button></td></tr>";
+							finalStr += "<tr><td><button type='button' class='boton exportar' onClick='exportar();'>Exportar</button><button type='button' class='boton' onClick='location.href=\"/\";'>Terminar</button></td></tr>";
 							$('#traductappForm').hide();
 							$("#archivos").html(finalStr);
 							$('#archivos').show();
@@ -105,7 +105,9 @@ $(document).ready(function() {
 });
 
 function saveFile(id) {
+	alert(id);
 	var myTextToSave = document.getElementById(id).value;
+	alert(myTextToSave);
   	$.ajax({
 		url: 'controller.php',
 		method: "POST",
