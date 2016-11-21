@@ -45,7 +45,7 @@
 				<h2>Importar Traducción</h2>
 				<form action="controller.php" method="post" id="importForm" enctype="multipart/form-data">
 					<div class="directory_chooser">
-						<span>Indique un directorio para analizar:</span>
+						<span>Seleccione un archivo para importar:</span>
 		        		<input type="file" name="archivosImportar" id="archivosImportar" accept=".csv" required />
 					</div>
 					<input class="boton" type="submit" name="submitButton" id="submitButton" value="Importar" />
@@ -54,13 +54,13 @@
 				<div id="loading"></div>
 			</div>
 		</div>
-		<?php 
+		<?php
 			if(isset($_GET["importar"])){
 				if($_GET["importar"] == 1){
 					echo '<script type="text/javascript">alert("Importación completa!");</script>';
 				}
 				else{
-					echo '<script type="text/javascript">alert("Falló la importación del archivo!");</script>';					
+					echo '<script type="text/javascript">alert("Falló la importación del archivo!");</script>';
 				}
 
 				echo '<script type="text/javascript">toggleSection("importar");</script>';
