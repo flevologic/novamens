@@ -45,7 +45,7 @@ else if (isset($_POST["archivos"])) {
 		$ruta = $archivos[$i]->ruta;
 		$idioma = $archivos[$i]->idioma;
 
-		$jsonToTraductOnArray[] = $ruta . "/" . $nombre;
+		$jsonToTraductOnArray[] = $ruta . DIRECTORY_SEPARATOR . $nombre;
 
 		if ($archivosTraducidos != '') {
 			$archivosTraducidos .= ' - ';

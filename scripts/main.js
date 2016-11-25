@@ -81,14 +81,16 @@ $(document).ready(function() {
 							} else {
 								// var finalStr = "La traducci&oacute;n se ha realizado satisfactoriamente<br>" +
 								var finalStr = "<h2>Revisi&oacute;n de las traducciones</h2><table style='margin-bottom:10px;'><tr><th>Archivo</th><th>Contenido</th><th>Guardar</th></tr>";
+								var cont = 0;
 								jQuery.each(res, function(i, val) {
 									finalStr += "<tr><td class='folder'>" + i;
 									finalStr += "</td>";
-									finalStr += "<td><textarea id='"+i+"' rows='4' cols='50'>";
+									finalStr += "<td><textarea id='"+cont+"' ruta='"+i+"' rows='4' cols='50'>";
 									jQuery.each(val, function(iVal, valFin) {
 										finalStr += valFin;
 									});
-									finalStr += "</textarea></td><td><button type='button' class='boton' onClick='saveFile(\"" + i + "\")'>Guardar</button></td><td style='display:none;' id='saved_"+i+"'>Guardado!</td></tr>";
+									finalStr += "</textarea></td><td><button type='button' class='boton' onClick='saveFile(\"" + cont + "\")'>Guardar</button></td><td style='display:none;' id='saved_"+cont+"'>Guardado!</td></tr>";
+									cont++;
 								});
 								finalStr += "</table>";
 							}
@@ -106,10 +108,11 @@ $(document).ready(function() {
 
 function saveFile(id) {
 	var myTextToSave = document.getElementById(id).value;
+	var route = $('#'+id).attr('ruta');
   	$.ajax({
 		url: 'controller.php',
 		method: "POST",
-		data: "individualFile=" + id + "&val=" + myTextToSave
+		data: "individualFile=" + route + "&val=" + myTextToSave
 	}).done(function(res){
 		document.getElementById("saved_" + id).style.display = "block";
 	});
